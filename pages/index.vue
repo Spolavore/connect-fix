@@ -4,11 +4,17 @@
     <span :class="corTexto">Leo Heisler</span>
     <span v-if="mostrarMensagem">Mongoloide</span>
     <span v-else>Totoso</span>
-    <Skibidi texto="skibidi toilet" @botao-clicado="handleEmit"/>
+
+
+    <div class="flex gap-5">
+      <Skibidi texto="skibidi toilet" @botao-clicado="handleEmit"/>
+      <ButtonsBotaoTeste/>
+    </div>
   </div>
 </template>
 
 <script setup>
+
 const colors = ref([
   "green-500",
   "red-500",
