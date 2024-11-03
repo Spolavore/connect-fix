@@ -9,9 +9,7 @@
                     <button :class="btnProvider()" class="btn" @click="setProvider(true)">Prestador de Serviço</button>
                 </div>
             </div>   
-            
             <form @submit.prevent="handleSubmit" class=" justify-between flex flex-col h-5/6 bg-emerald-600">
-                
                 <div class="inputDiv">
                     <p class=" inputDesc">Nome Completo:*</p>
                     <input v-model="userData.nome" required class="inputRes w-full" type="text" placeholder=""  name="username">
