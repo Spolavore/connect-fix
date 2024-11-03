@@ -1,3 +1,4 @@
+
 <template>
     <div class="h-screen w-screen flex flex-col justify-center items-center">
         <div class="w-1/2 justify-center items-center h-4/5  border-black border-4 rounded-xl  bg-emerald-600"> 
@@ -9,46 +10,52 @@
                 </div>
             </div>   
             
-            <div class=" justify-between flex flex-col h-5/6 bg-emerald-600">
+            <form @submit.prevent="handleSubmit" class=" justify-between flex flex-col h-5/6 bg-emerald-600">
+                
                 <div class="inputDiv">
                     <p class=" inputDesc">Nome Completo:*</p>
-                    <input v-model="userData.nome" class="inputRes w-full" type="text" placeholder=""  name="username">
+                    <input v-model="userData.nome" required class="inputRes w-full" type="text" placeholder=""  name="username">
                 </div>
                 <div class="inputDiv">
                     <p class="inputDesc ">Email:*</p>
-                    <input v-model="userData.email" class="inputRes w-full" type="email" placeholder=""  name="userEmail">
+                    <input v-model="userData.email" required class="inputRes w-full" type="email" placeholder=""  name="userEmail">
                 </div>
                 <div class="inputDiv">
                     <p class="inputDesc ">CPF:*</p>
-                    <input v-model="userData.CPF" class="inputRes w-full" type="email" placeholder=""  name="userEmail">
-                </div>
-                <div class="inputDiv">
-                    <p class="inputDesc">Data Nascimento:*</p>
-                    <input v-model="userData.date" class="inputRes w-full" type="text" placeholder=''  name="userDate">
+                    <input v-model="userData.cpf" required class="inputRes w-full" type="text" placeholder=""  name="userEmail">
                 </div>
                 <div class="inputDiv" v-if="isProvider">
-                    <p class=" inputDesc ">Localização:*</p>
-                    <input v-model="userData.local" class="inputRes w-full" type="text" placeholder=""  name="userCity">
+                    <p class=" inputDesc ">CEP:*</p>
+                    <input v-model="userData.cep" required class="inputRes w-full" type="text" placeholder=""  name="userCity">
+                </div>
+                <div class="inputDiv" v-if="isProvider">
+                    <p class=" inputDesc ">Cidade:*</p>
+                    <input v-model="userData.cidade" required class="inputRes w-full" type="text" placeholder=""  name="userCity">
+                </div>
+                <div class="inputDiv" v-if="isProvider">
+                    <p class=" inputDesc ">Estado:*</p>
+                    <input v-model="userData.estado" required class="inputRes w-full" type="text" placeholder=""  name="userCity">
                 </div>
                 <div class="inputDiv" v-if="isProvider">
                     <p class=" inputDesc ">Encanador/Eletricista:*</p>
-                    <input v-model="userData.prof" class="inputRes w-full" type="text" placeholder=""  name="userCity">
+                    <input v-model="userData.profissao" required class="inputRes w-full" type="text" placeholder=""  name="userCity">
                 </div>
                 <div class="inputDiv">
                     <p class="inputDesc ">Senha:*</p>
-                    <input v-model="userData.password" class="inputRes w-full" type="password" placeholder=""  name="userCity">
+                    <input v-model="userData.senha" required class="inputRes w-full" type="password" placeholder=""  name="userCity">
                 </div>
                 <div class="inputDiv">
                     <p class="inputDesc">Confirma Senha:*</p>
-                    <input v-model="userData.sndPassword" class="inputRes w-full" type="password" placeholder=""  name="userCity">
+                    <input class="inputRes w-full" v-model="segSenha" required type="password" placeholder=""  name="userCity">
                 </div>
-            </div>
+                <div class="w-fit">
+                    <NuxtLink class="btnFinal" to="/">VOLTAR</NuxtLink>
+                    <button class="btnFinal">ENVIAR</button>
+                </div>
+            </form>
         </div>
 
-        <div class="w-fit">
-            <NuxtLink class="btnFinal" to="/">VOLTAR</NuxtLink>
-            <button class="btnFinal" @click="teste()">ENVIAR</button>
-        </div>
+
 
 
     </div>
@@ -56,28 +63,50 @@
 </template>
 
 <script setup>
+    import requestService from '~/services/requestService';
     //DADOS
+    const segSenha = ref("")
     const isProvider = ref(false)
-    const userData = ref( {
-        isProvider: isProvider, 
+    const userData = reactive( {
         nome: '',
         email: '',
-        date: '',
-        CPF: '',
-        prof: null,
-        local: null,
-        password: '',
-        sndPassword:'',
+        cpf: '',
+        profissao: null,
+        cep: null,
+        cidade: null,
+        estado: null,
+        senha: '',
     })
+
     
     //METODOS
     const setProvider= (bool) =>{
         isProvider.value = bool;
     }
-    const teste = () =>{
-        console.log(userData)
+    const fazerRequest = () =>{
+        let url = isProvider.value ? "http://localhost:6969/prestador" : "http://localhost:6969/solicitador"
+    
+        const options = {
+            url: url,
+            data: userData,
+            callback: (res) => {
+                console.log(res)
+            },
+            errorCallback: (err) =>{
+                console.log(err)
+            }
+        }
+        requestService.postRequest(options)
     }
-
+    const handleSubmit = () =>{
+        console.log(segSenha.value)
+        console.log(userData.senha)
+        if( segSenha.value == userData.senha){
+            fazerRequest()
+        }else{
+            alert("senha tomou gap")
+        }
+    }
     //CONTROLADORES DE RENDERIZAÇÃO
     const btnUser = () => {
         return{
