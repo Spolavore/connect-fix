@@ -1,6 +1,7 @@
 import requestService from "./requestService";
 
 export function mascaraCPF(cpf) {
+    if(cpf === null)return;
     // Remove qualquer caractere que não seja número
     cpf = cpf.replace(/\D/g, "");
 
@@ -13,6 +14,7 @@ export function mascaraCPF(cpf) {
     return cpf;
 }
 export function mascaraCEP(cep) {
+    if(cep === null)return;
     // Remove qualquer caractere que não seja número
     cep = cep.replace(/\D/g, "");
 
