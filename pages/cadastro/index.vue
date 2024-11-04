@@ -5,7 +5,7 @@
             <div class="h-1/6">
                 <h1 class="w-full font-bold text-3xl flex items-center justify-center h-1/2 border-b-4 border-black text-neutral-100">CADASTRO</h1>
                 <div class="flex justify-between h-1/2">
-                    <button :class="btnUser()" class="btn" @click="setProvider(false)">Usuário Comum</button>
+                    <button :class="btnUser()" class="btn" @click="setProvider(false)">Solicitador de Serviço</button>
                     <button :class="btnProvider()" class="btn" @click="setProvider(true)">Prestador de Serviço</button>
                 </div>
             </div>   
@@ -20,23 +20,26 @@
                 </div>
                 <div class="inputDiv">
                     <p class="inputDesc ">CPF:*</p>
-                    <input v-model="userData.cpf" required class="inputRes w-full" type="text" placeholder=""  name="userEmail">
+                    <input v-model="userData.cpf" required maxlength="14" class="inputRes w-full" type="text" placeholder="___ . ___ . ___ - __"  name="userEmail">
                 </div>
                 <div class="inputDiv" v-if="isProvider">
                     <p class=" inputDesc ">CEP:*</p>
-                    <input v-model="userData.cep" required class="inputRes w-full" type="text" placeholder=""  name="userCity">
+                    <input v-model="userData.cep" required class="inputRes w-full" type="text"  maxlength="9" placeholder="_____-___"  name="userCity">
                 </div>
                 <div class="inputDiv" v-if="isProvider">
                     <p class=" inputDesc ">Cidade:*</p>
-                    <input v-model="userData.cidade" required class="inputRes w-full" type="text" placeholder=""  name="userCity">
+                    <input :disabled="temResposta" v-model="userData.cidade" required class="inputRes w-full" type="text" placeholder=""  name="userCity">
                 </div>
                 <div class="inputDiv" v-if="isProvider">
                     <p class=" inputDesc ">Estado:*</p>
-                    <input v-model="userData.estado" required class="inputRes w-full" type="text" placeholder=""  name="userCity">
+                    <input :disabled="temResposta" v-model="userData.estado" required class="inputRes w-full" type="text" placeholder=""  name="userCity">
                 </div>
                 <div class="inputDiv" v-if="isProvider">
                     <p class=" inputDesc ">Encanador/Eletricista:*</p>
-                    <input v-model="userData.profissao" required class="inputRes w-full" type="text" placeholder=""  name="userCity">
+                    <select v-model="userData.profissao">
+                        <option value="encanador">Encanador</option>
+                        <option value="eletricista">Eletricista</option>
+                    </select>
                 </div>
                 <div class="inputDiv">
                     <p class="inputDesc ">Senha:*</p>
@@ -62,10 +65,13 @@
 
 <script setup>
     import requestService from '~/services/requestService';
+    import {buscaPorCEP, mascaraCPF, mascaraCEP} from '~/services/verificaInfos.js'
     //DADOS
     const segSenha = ref("")
     const isProvider = ref(false)
+    const temResposta = ref(false)
     const userData = reactive( {
+        eProvedor: isProvider.value,
         nome: '',
         email: '',
         cpf: '',
@@ -81,24 +87,23 @@
     const setProvider= (bool) =>{
         isProvider.value = bool;
     }
-    const fazerRequest = () =>{
+    const fazerRequest = async () =>{
         let url = isProvider.value ? "http://localhost:6969/prestador" : "http://localhost:6969/solicitador"
     
         const options = {
             url: url,
             data: userData,
             callback: (res) => {
-                console.log(res)
+                alert("Usuario criado com sucesso")
             },
             errorCallback: (err) =>{
-                console.log(err)
+                alert("Erro na criação do usuario")
             }
         }
-        requestService.postRequest(options)
+        await requestService.postRequest(options)
+        
     }
     const handleSubmit = () =>{
-        console.log(segSenha.value)
-        console.log(userData.senha)
         if( segSenha.value == userData.senha){
             fazerRequest()
         }else{
@@ -121,6 +126,27 @@
             'border-l-4':isProvider.value
         };
     }
+
+    watch(userData, async () =>{
+        userData.cpf = mascaraCPF(userData.cpf)
+        if(isProvider.value){
+            userData.cep = mascaraCEP(userData.cep)
+            if(userData.cep.length == 9){
+                console.log(userData.cep)
+                try {
+                    const resposta = await buscaPorCEP(userData.cep)
+                    if(resposta.cep){
+                        userData.cidade = resposta.localidade
+                        userData.estado = resposta.estado
+                        temResposta.value = true
+                    }
+                } catch (error) {
+                    console.log("nao peguei a viacep")
+                }
+            }
+        }
+
+    })
     
 
 </script>
