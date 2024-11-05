@@ -7,15 +7,11 @@
 <script setup>
 
 
-
-onMounted(() => {
-  navigateTo('/login')
-});
-
 const handleEmit = (param) => {
   alert(param);
   mostrarMensagem.value = !mostrarMensagem.value;
 }
+
 </script>
 
 <style scoped>
