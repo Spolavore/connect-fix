@@ -14,7 +14,7 @@
           <span class="flex flex-col gap-2">
           Senha
           <div class="flex gap-2">
-            <input v-model="senha" :type="visilibidadeSenha" class="input-padrao" required/>
+            <input v-model="senha" :type="visilibidadeSenha" class="input-padrao" required ref="senhaInput"/>
             <img v-if="senha" :src="iconeVisibilidade" @click="() => mostrarSenha = !mostrarSenha" class="cursor-pointer" >
           </div>
           </span>
@@ -22,7 +22,7 @@
             v-if="!realizandoLogin"
             class="flex justify-end gap-2">
             <button class="w-24 h-9 botao-cinza">Cadastrar</button>
-            <button class="w-24 h-9 botao-azul">Logar</button>
+            <button class="w-24 h-9 botao-azul" type="submit">Logar</button>
           </div>
           <div
             v-else
@@ -33,7 +33,7 @@
           </div>
           </div>
           <div class="flex flex-col w-full items-center mt-6">
-            <span class="text-neutral-500 text-base underline cursor-pointer" @click="() => loginPrestador = !loginPrestador">{{ textoTipoLogin }}</span>
+            <span class="text-neutral-500 text-base underline cursor-pointer" @click="toggleLoginPrestador">{{ textoTipoLogin }}</span>
           </div>
         </div>
       </form>
@@ -73,6 +73,11 @@ const textoBoasVindas = computed(() => {
 })
 
 
+onMounted(() => {
+  if(isClientSide()){
+    if(localStorage.getItem('user-info')) localStorage.removeItem('user-info')
+  }
+})
 
 const handleLogin = async () => {
   realizandoLogin.value = true;
@@ -85,7 +90,7 @@ const handleLogin = async () => {
     },
     callback: (response) => {
       localStorage.setItem('user-info', response.token);
-      return navigateTo('/')
+      return navigateTo('/');
     },
     errorCallback: (error) => {
       alert(error.response.data);
@@ -93,7 +98,10 @@ const handleLogin = async () => {
   }
   await requestService.postRequest(options);
   realizandoLogin.value = false;
+}
 
+const toggleLoginPrestador  = () =>{
+  loginPrestador.value = !loginPrestador.value;
 }
 </script>
 
