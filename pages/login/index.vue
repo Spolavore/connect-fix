@@ -61,7 +61,7 @@ const visilibidadeSenha = computed(() => {
 });
 
 const iconeVisibilidade = computed(() => {
-  return mostrarSenha.value ? VisibilidadeOn : VisibilidadeOFF;
+  return mostrarSenha.value ? VisibilidadeOFF : VisibilidadeOn;
 })
 
 const textoTipoLogin = computed(() => {

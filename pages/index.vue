@@ -1,7 +1,5 @@
 <template>
-<div class="w-full h-20 bg-sky-50">
-  <h2>Home</h2>
-</div>
+    <NavBar/>
 </template>
 
 <script setup>
