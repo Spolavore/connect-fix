@@ -4,7 +4,7 @@ import {jwtDecode} from 'jwt-decode';
 export default defineNuxtRouteMiddleware((to, from) => {
   if (isClientSide()) {
     const userInfo = localStorage.getItem('user-info');
-    if (!userInfo && to.path !== '/login') {
+    if (!userInfo && to.path !== '/login' && to.path !== '/cadastrar') {
        // Utilizar o window.location pq forca o recarregamento da pagina e nao buga o estilo
        window.location.href = '/login'
     } else if (userInfo) {
