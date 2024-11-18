@@ -21,7 +21,7 @@
           <div 
             v-if="!realizandoLogin"
             class="flex justify-end gap-2">
-            <button class="w-24 h-9 botao-cinza">Cadastrar</button>
+            <button class="w-24 h-9 botao-cinza" @click="() => navigateTo('/cadastro')">Cadastrar</button>
             <button class="w-24 h-9 botao-azul" type="submit">Logar</button>
           </div>
           <div

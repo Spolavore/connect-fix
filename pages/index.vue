@@ -4,16 +4,6 @@
 
 <script setup>
 
-
-const handleEmit = (param) => {
-  alert(param);
-  mostrarMensagem.value = !mostrarMensagem.value;
-}
-
-onMounted(() => {
-  console.log('ESTOU NA HOME')
-})
-
 </script>
 
 <style scoped>
