@@ -38,7 +38,12 @@
         </div>
       </form>
     </div>
-  </div>
+    <Toast 
+      v-if="mostrarToast" 
+      :texto="mensagemToast" 
+      status="erro"  
+      @fecharToast="() => mostrarToast = false"/>
+</div>
 </template>
 
 <script setup>
@@ -55,13 +60,15 @@ const senha = ref('');
 const mostrarSenha = ref(false);
 const loginPrestador = ref(false);
 const realizandoLogin = ref(false);
+const mensagemToast = ref('');
+const mostrarToast = ref(false);
 
 const visilibidadeSenha = computed(() => {
   return mostrarSenha.value ? 'text' : 'password';
 });
 
 const iconeVisibilidade = computed(() => {
-  return mostrarSenha.value ? VisibilidadeOn : VisibilidadeOFF;
+  return mostrarSenha.value ? VisibilidadeOFF : VisibilidadeOn;
 })
 
 const textoTipoLogin = computed(() => {
@@ -93,7 +100,8 @@ const handleLogin = async () => {
       return navigateTo('/');
     },
     errorCallback: (error) => {
-      alert(error.response.data);
+      mostrarToast.value = true;
+      mensagemToast.value = error.response.data
     }
   }
   await requestService.postRequest(options);

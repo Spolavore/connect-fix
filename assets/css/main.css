@@ -8,6 +8,7 @@ html {
 
   html, * {
     scroll-behavior: smooth;
+    overflow: hidden;
     @apply font-sans;
   }
   
