@@ -4,12 +4,12 @@
             <div class="h-1/6">
                 <h1 class="w-full font-bold text-3xl flex items-center justify-center h-1/2  text-blue-800">Cadastro
                 </h1>
-                <div class="flex justify-between h-1/2">
+                <div class="flex justify-between h-fit">
                     <button :class="btnUser()" class="btn" @click="setProvider(false)">Solicitador de Serviço</button>
                     <button :class="btnProvider()" class="btn" @click="setProvider(true)">Prestador de Serviço</button>
                 </div>
             </div>
-            <form @submit.prevent="handleSubmit" class=" justify-between flex flex-col space-y-3 pb-10 pt-5">
+            <form @submit.prevent="handleSubmit" class="justify-between flex flex-col space-y-3 pb-10 pt-5 h-fit">
                 <div class="inputDiv">
                     <p class=" inputDesc">Nome Completo:*</p>
                     <input v-model="userData.nome" required class="input-padrao w-full" type="text" placeholder=""
@@ -42,7 +42,7 @@
                 </div>
                 <div class="inputDiv" v-if="isProvider">
                     <p class=" inputDesc ">Serviço Oferecido:*</p>
-                    <select class="input-padrao w-full" v-model="userData.profissao">
+                    <select class="input-padrao w-full" v-model="userData.profissao" required>
                         <option value="encanador">Encanador</option>
                         <option value="eletricista">Eletricista</option>
                     </select>
@@ -50,10 +50,10 @@
                 <div class="inputDiv" v-if="isProvider">
                     <p class="inputDesc">Comprovante de profissão:*</p>
                     <label class="file-input-label">
-                        <input @change="handleFileChange" required type="file" accept="application/pdf"
+                        <input @change="handleFileChange" type="file" accept="application/pdf"
                             name="profissaoComprovante">
                         <div class="input-padrao w-full flex items-center">
-                            {{ selectedFileName || 'Escolha o arquivo' }}
+                            {{ selectedFileName || 'Escolha o arquivo ( .pdf )' }}
                         </div>
                     </label>
                 </div>
@@ -73,10 +73,11 @@
                 </div>
             </form>
         </div>
-
-
-
-
+        <Toast 
+      v-if="mostrarToast" 
+      :texto="mensagemToast" 
+      :status="statusToast"  
+      @fecharToast="() => mostrarToast = false"/>
     </div>
 
 </template>
@@ -99,7 +100,9 @@ const userData = reactive({
     estado: null,
     senha: '',
 })
-
+const mostrarToast = ref(false);
+const mensagemToast = ref('');
+const statusToast = ref('');
 
 //METODOS
 const setProvider = (bool) => {
@@ -112,20 +115,37 @@ const fazerRequest = async () => {
         url: url,
         data: userData,
         callback: (res) => {
-            alert("Usuario criado com sucesso")
+            statusToast.value = 'sucesso';
+            mensagemToast.value = "Usuario criado com sucesso";
+            mostrarToast.value = true;
+            setTimeout(() => {
+                return navigateTo('/login');
+            }, 2000)
         },
         errorCallback: (err) => {
-            alert("Erro na criação do usuario")
+            statusToast.value = 'erro';
+            mensagemToast.value = "Erro na criação do usuario";
+            mostrarToast.value = true;
         }
     }
     await requestService.postRequest(options)
 
 }
 const handleSubmit = () => {
-    if (segSenha.value == userData.senha) {
-        fazerRequest()
-    } else {
-        alert("senha tomou gap")
+    console.log('entrei')
+    console.log(selectedFileName.value == '' && isProvider.value)
+    if(segSenha.value != userData.senha) {
+        statusToast.value = 'erro';
+        mensagemToast.value = "Senhas diferentes informadas";
+        mostrarToast.value = true;
+    }
+    else if(selectedFileName.value == '' && isProvider.value){
+        statusToast.value = 'erro';
+        mensagemToast.value = "Adicionar documento comprovante";
+        mostrarToast.value = true;
+    }
+    else {
+        fazerRequest();
     }
 }
 //CONTROLADORES DE RENDERIZAÇÃO
@@ -143,12 +163,19 @@ const btnProvider = () => {
     };
 }
 
+
 watch(userData, async () => {
-    userData.cpf = mascaraCPF(userData.cpf)
+    if(userData.cpf != null) userData.cpf = mascaraCPF(userData.cpf);
     if (isProvider.value) {
+        if(userData.cep === null) return
+        
         userData.cep = mascaraCEP(userData.cep)
-        if (userData.cep.length == 9) {
-            console.log(userData.cep)
+        if(userData.cep.length < 9) {
+            temResposta.value = false;
+            userData.cidade = '';
+            userData.estado = '';
+        }
+         else if (userData.cep.length == 9 && !temResposta.value) {
             try {
                 const resposta = await buscaPorCEP(userData.cep)
                 if (resposta.cep) {
@@ -167,8 +194,9 @@ watch(userData, async () => {
 const selectedFileName = ref('');
 
 const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    selectedFileName.value = file ? file.name : '';
+    const file = event.target.files[0]; 
+    if (file) { selectedFileName.value = file.name; } 
+    else { selectedFileName.value = ''; }
 };
 
 </script>

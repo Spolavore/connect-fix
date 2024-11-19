@@ -1,14 +1,16 @@
 <template>
-  <div
-    class="w-96 h-20 bg-white absolute right-0 top-5 flex border border-neutral-200 rounded-s-lg drop-shadow-md animacaoToast "
-  >
+  <div class="overflow-hidden">
     <div
-      class="relative left-0 h-full w-5 rounded-s-lg"
-      :class="estiloBorda"
-    ></div>
-    <div class="w-full flex items-center justify-center gap-2">
-      <img :src="iconeToast" />
-      <span class="text-neutral-600 text-center text-justify">{{ texto }}</span>
+      class="w-96 h-20 bg-white absolute right-0 top-5 flex border border-neutral-200 rounded-s-lg drop-shadow-md animacaoToast "
+    >
+      <div
+        class="relative left-0 h-full w-5 rounded-s-lg"
+        :class="estiloBorda"
+      ></div>
+      <div class="w-full flex items-center justify-center gap-2">
+        <img :src="iconeToast" />
+        <span class="text-neutral-600 text-center">{{ texto }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -50,22 +52,18 @@ const iconeToast = computed(() => {
 <style scoped>
 @keyframes animacaoEntrada {
   0% {
-    transform: translateX(100%);
     opacity: 0;
   }
   50% {
-    transform: translateX(0); 
     opacity: 1;
   }
 }
 
 @keyframes animacaoSaida {
   0% {
-    transform: translateX(0);
     opacity: 1;
   }
   100% {
-    transform: translateX(100%);
     opacity: 0;
   }
 }
