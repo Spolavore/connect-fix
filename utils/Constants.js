@@ -6,6 +6,7 @@ const api_urls = () => {
   
     return {
       login: apiUrl + '/login',
+      agendamentosPendentes: apiUrl + '/agendamentosPendentes'
     };
   };
   
