@@ -1,14 +1,43 @@
 <template>
-    <div class="absolute top-16 right-32 drop-shadow-lg bg-neutral-100 w-64 flex flex-col rounded-md z-50">
+    <div class="absolute top-16 right-32 drop-shadow-lg bg-neutral-100 w-80 flex flex-col rounded-md z-50 ">
         <span class=" border-b-2  p-2 text-center">Caixa de mensagens</span>
-        <div class="p-2">
+        <div class="p-2 h-64 overflow-auto">
             <div 
-                v-if="!temServicosRequisitados"
+                v-if="carregandoAgendamentos"
+                class="flex items-center justify-center h-full"
+            >
+                <img src="/icons/loading_circle.svg" class="animate-spin w-10">
+            </div>
+            <div 
+                v-else-if="!temServicosRequisitados"
                 class="flex flex-col items-center gap-2 mt-5"
             >
                 <img src="/images/sem-servicos.png" class="w-20" >
                 <span class="text-base text-center netral-500">Não encontramos nenhum serviço requisitado</span>
                 
+            </div>
+            <div 
+                v-else
+                class="flex flex-col gap-3"
+            >
+                <div 
+                    v-for="agendamento, index in agendamentos"
+                    class="flex text-sm justify-between items-center border p-2 rounded-lg border-neutral-300 "
+                >
+                  <div class="flex flex-col">
+                      <span><b class="text-blue-900">Título:</b> {{ agendamento.descricao }}</span>
+                      <span><b class="text-blue-900">Descrição:</b> {{ agendamento.titulo }}</span>
+                      <span ><b class="text-blue-900">Dia:</b> {{ Utils.formataData(agendamento.dt_dia)}} </span>
+                      <span><b class="text-blue-900">Horário:</b>  {{ agendamento.dt_horario }} </span>
+                  </div>
+
+                  <div class="flex gap-2">
+                    <img src="/icons/sucesso.svg" class="botao-acao">
+                    <img src="/icons/error.svg" class="botao-acao">
+
+                  </div>
+
+                </div>
             </div>
         </div>
     </div>
@@ -19,11 +48,12 @@
 import requestService from '~/services/requestService';
 import userService from '~/services/userService';
 import api_urls from '~/utils/Constants';
+import Utils from '~/utils/Utils';
 
-const servicos = ref([]);
-
+const agendamentos = ref([]);
+const carregandoAgendamentos = ref(false);
 const temServicosRequisitados = computed(() => {
-    return servicos.length > 0;
+    return agendamentos.value.length > 0;
 })
 
 onMounted(async() => {
@@ -31,6 +61,7 @@ onMounted(async() => {
 })
 
 const buscarServicos = async () => {
+    carregandoAgendamentos.value = true;
     try {
         if(isClientSide()){
             const idPrestador = userService.getUserInfo().id;
@@ -38,12 +69,21 @@ const buscarServicos = async () => {
                 url: api_urls().agendamentosPendentes + `/${idPrestador}`
             }
             const agendamentosPendentes = await requestService.getRequest(options);
-            console.log(agendamentosPendentes)
-
+            agendamentos.value.push(...agendamentosPendentes);
         }
     } catch (error) {
-        
+        console.log(error);
     }
+    carregandoAgendamentos.value = false;
+
 }
 
 </script>
+
+<style scoped>
+
+.botao-acao {
+    @apply cursor-pointer hover:scale-125 transition-transform
+}
+
+</style>
