@@ -1,12 +1,16 @@
 <template>
   <NavBar />
   <div>
-    <CatalogProfessionalSwitch @toggle-services="toggleServiceCards" :is-primary-state="isPrimaryServiceState" />
+    <CatalogProfessionalSwitch 
+      @toggle-services="toggleServiceCards" 
+      @search="handleSearch"
+      :is-primary-state="isPrimaryServiceState" 
+    />
     <div class="flex justify-center w-full">
       <div class="w-3/4 grid grid-cols-3 gap-4">
         <ServiceCard 
           v-if="isPrimaryServiceState"
-          v-for="service in primaryServices"
+          v-for="service in filteredPrimaryServices"
           :key="service.id"
           :serviceTitle="service.title"
           :professionalName="service.professional"
@@ -15,7 +19,7 @@
 
         <ProfessionalCard 
           v-else
-          v-for="professional in professionals"
+          v-for="professional in filteredProfessionals"
           :key="professional.id"
           :professionalName="professional.name"
           :profession="professional.profession"
@@ -28,11 +32,12 @@
 </template>
 
 <script setup>
+import { ref, computed } from 'vue'
 
 // Estado dos serviços
 const isPrimaryServiceState = ref(true)
 
-// dados catálogo, faremos com um .map depois (?)
+// dados catálogo (tomar cuidado para que cada serviço/prestador tenha um id unico!!!)
 const primaryServices = [
   {
     id: 1,
@@ -53,56 +58,97 @@ const primaryServices = [
     description: "Mais uma descrição para garantir o layout correto."
   },
   {
-    id: 2,
+    id: 4,
     title: "Outro Serviço",
     professional: "Outro Profissional",
     description: "Outra descrição de serviço para teste de layout."
   },
   {
-    id: 3,
+    id: 5,
     title: "Mais um Serviço",
     professional: "Mais um Profissional",
     description: "Mais uma descrição para garantir o layout correto."
   },
 ]
 
-// dados prestadores
+// dados prestadores ]
 const professionals = [
   {
     id: 1,
     name: "Miguel Ohara",
     profession: "eletricista",
     description: "Você deveria me contratar porque eu sou um cara mui-to legal com muitos anos de experiência no mer-cado de trabalho e eu sou extremamente compe-tente e nunca falhei na vida",
-    rating: 9.2
+    rating: 4.2
   },
   {
     id: 2,
     name: "João Silva",
     profession: "encanador",
     description: "Especialista em resolução de problemas hidráulicos, com mais de 15 anos de experiência. Garantia de serviço de qualidade e atendimento rápido.",
-    rating: 8.7
+    rating: 3.7
   },
   {
     id: 3,
     name: "Pedro Santos",
     profession: "eletricista",
     description: "Técnico especializado em instalações elétricas residenciais e comerciais. Segurança e eficiência em primeiro lugar.",
-    rating: 9.5
+    rating: 5
   },
   {
-    id: 2,
+    id: 4,
     name: "Guilherme Santos",
     profession: "encanador",
     description: "Especialista em resolução de problemas hidráulicos, com mais de 15 anos de experiência. Garantia de serviço de qualidade e atendimento rápido.",
-    rating: 8.7
+    rating: 4.7
+  },  
+  {
+    id: 5,
+    name: "Leonardo Young",
+    profession: "encanador",
+    description: "Especialista em resolução de problemas hidráulicos, com mais de 15 anos de experiência. Garantia de serviço de qualidade e atendimento rápido.",
+    rating: 4
   },
 ]
 
-// metodo para alternar os serviços
+
+
+// estado de pesquisa
+const searchQuery = ref('')
+
+// método para alternar os serviços
 const toggleServiceCards = () => {
   isPrimaryServiceState.value = !isPrimaryServiceState.value
 }
 
+// método de manipulação da pesquisa
+const handleSearch = (searchData) => {
+  searchQuery.value = searchData.query.toLowerCase()
+}
+
+// filtro de serviços primários
+const filteredPrimaryServices = computed(() => {
+  if (!searchQuery.value) return primaryServices
+  
+  return primaryServices.filter(service => 
+    service.title.toLowerCase().includes(searchQuery.value)
+  )
+})
+
+// filtro de profissionais
+const filteredProfessionals = computed(() => {
+  if (!searchQuery.value) return professionals
+  
+  if (searchQuery.value) {
+    return professionals
+      .filter(professional => 
+        professional.profession.toLowerCase().includes(searchQuery.value)
+      )
+      // Ordena por nota em ordem decrescente quando na tela de profissionais
+      .sort((a, b) => b.rating - a.rating)
+  }
+  
+  return professionals
+})
 </script>
 
 <style scoped>

@@ -16,16 +16,16 @@
       <div class="flex items-center justify-between">
         <div class="flex items-center">
           <div class="flex mr-2">
-            <svg v-for="n in 3" :key="n" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#3B82F6" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg v-for="n in 1" :key="n" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#3B82F6" stroke="#3B82F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
             </svg>
           </div>
-          <span class="text-gray-700">{{ rating }}/10</span>
+          <span class="text-gray-700">{{ rating }}/5</span>
         </div>
         
         <button 
           @click="openModal" 
-          class="bg-blue-500 text-white px-14 py-2 rounded-md hover:bg-blue-600 transition-colors"
+          class="bg-blue-500 text-white w-[67%] py-2 rounded-md hover:bg-blue-600 transition-colors"
         >
           Solicitar
         </button>
