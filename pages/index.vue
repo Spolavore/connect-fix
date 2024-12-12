@@ -1,37 +1,44 @@
 <template>
   <NavBar />
-  <div>
-    <CatalogProfessionalSwitch 
-      @toggle-services="toggleServiceCards" 
-      @search="handleSearch"
-      :is-primary-state="isPrimaryServiceState" 
-    />
-    <div class="flex justify-center w-full">
-      <div class="w-3/4 grid grid-cols-3 gap-4">
-        <ServiceCard 
-          v-if="isPrimaryServiceState"
-          v-for="service in filteredPrimaryServices"
-          :key="service.id"
-          :serviceTitle="service.title"
-          :professionalName="service.professional"
-          :serviceDescription="service.description"
-        />
+  <div v-if="ehSolicitador">
+    <div>
+      <CatalogProfessionalSwitch 
+        @toggle-services="toggleServiceCards" 
+        @search="handleSearch"
+        :is-primary-state="isPrimaryServiceState" 
+      />
+      <div class="flex justify-center w-full">
+        <div class="w-3/4 grid grid-cols-3 gap-4">
+          <ServiceCard 
+            v-if="isPrimaryServiceState"
+            v-for="service in filteredPrimaryServices"
+            :key="service.id"
+            :serviceTitle="service.title"
+            :professionalName="service.professional"
+            :serviceDescription="service.description"
+          />
 
-        <ProfessionalCard 
-          v-else
-          v-for="professional in filteredProfessionals"
-          :key="professional.id"
-          :professionalName="professional.name"
-          :profession="professional.profession"
-          :description="professional.description"
-          :rating="professional.rating"
-        />
+          <ProfessionalCard 
+            v-else
+            v-for="professional in filteredProfessionals"
+            :key="professional.id"
+            :professionalName="professional.name"
+            :profession="professional.profession"
+            :description="professional.description"
+            :rating="professional.rating"
+          />
+        </div>
       </div>
     </div>
+  </div>
+
+  <div v-else>
+    <h1>aqui ficarão as coisas do prestador</h1>
   </div>
 </template>
 
 <script setup>
+import { jwtDecode } from 'jwt-decode'
 import { ref, computed } from 'vue'
 
 // Estado dos serviços
@@ -148,6 +155,23 @@ const filteredProfessionals = computed(() => {
   }
   
   return professionals
+})
+
+// verificar se é um solicitador, usando o localstorage
+const ehSolicitador = computed(() => {
+  if (isClientSide()) {
+    const userInfo = localStorage.getItem('user-info')
+    if (userInfo) {
+      try {
+        const decodedToken = jwtDecode(userInfo)
+        return !decodedToken.prestador 
+      } catch (error) {
+        console.error('Erro ao decodificar token', error)
+        return false
+      }
+    }
+  }
+  return false
 })
 </script>
 

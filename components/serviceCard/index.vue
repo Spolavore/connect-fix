@@ -98,8 +98,12 @@ const closeModal = () => {
 }
 
 const confirmSchedule = () => {
-  // local para adicionar logica futura
-  // por agora, so fecha o modal, adicionarei o alerta em breve também!
+  // Verifica se data e hora foram selecionadas
+  if (!selectedDate.value || !selectedTime.value) {
+    alert('Por favor, selecione uma data e hora')
+    return
+  }
   closeModal()
 }
+
 </script>
