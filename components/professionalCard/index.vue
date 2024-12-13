@@ -1,5 +1,12 @@
 <template>
     <div class="w-full max-w-full border-2 border-[#3B82F6] rounded-lg p-4 flex flex-col">
+      <Toast 
+      v-if="showToast" 
+      :texto="toastTexto" 
+      :status="toastStatus" 
+      @fecharToast="fecharToast"
+    />
+    
       <div class="flex items-center mb-4">
         <div class="w-16 h-16 bg-[#3B82F6] rounded-full mr-4"></div>
         
@@ -10,7 +17,7 @@
       </div>
       <!-- adicionarei um icone para cada profissão em breve-->
       <p class="text-base text-gray-700 mb-4 flex-grow">
-        {{ truncatedDescription }}
+        {{ limiteCaracteresDesc }}
       </p>
       
       <div class="flex items-center justify-between">
@@ -109,8 +116,14 @@
       validator: (value) => value >= 0 && value <= 10
     }
   })
+
+  // variaveis toast 
+  const showToast = ref(false)
+  const toastTexto = ref('')
+  const toastStatus = ref('')
+
   // limite de caracteres: 200.
-  const truncatedDescription = computed(() => {
+  const limiteCaracteresDesc = computed(() => {
     return props.description.length > 200 
       ? props.description.slice(0, 200) + '...' 
       : props.description
@@ -131,12 +144,20 @@
   }
   
   const submitServiceRequest = () => {
-    // local para adicionar logica futura
-    // por enquanto so fecha o modal
-    console.log('Service Request:', {
-      title: serviceTitle.value,
-      description: serviceDescription.value
-    })
-    closeModal()
-  }
+  console.log('Service Request:', {
+    title: serviceTitle.value,
+    description: serviceDescription.value
+  })
+  
+  // mostrando toast de sucesso
+  showToast.value = true
+  toastTexto.value = 'Solicitação de serviço enviada com sucesso!'
+  toastStatus.value = 'sucesso'
+  
+  closeModal()
+}
+
+const fecharToast = () => {
+  showToast.value = false
+}
   </script>

@@ -1,10 +1,18 @@
 <template>
   <div class="w-full max-w-full border-2 border-[#3B82F6] rounded-lg p-4 flex flex-col">
+    <!-- Componente de Toast -->
+    <Toast 
+      v-if="showToast" 
+      :texto="toastTexto" 
+      :status="toastStatus" 
+      @fecharToast="fecharToast"
+    />
+
     <h2 class="text-xl font-medium text-gray-800 mb-2">{{ serviceTitle }}</h2>
     <h3 class="text-base font-light text-gray-600 mb-3">{{ professionalName }}</h3>
     
     <p class="text-base text-gray-700 mb-4 flex-grow">
-      {{ truncatedDescription }}
+      {{ limiteCaracteres }}
     </p>
     
     <button 
@@ -14,7 +22,7 @@
       Solicitar
     </button>
 
-    <!-- Modal de Agendamento *colocar campos como obrigatórios*-->
+    <!-- modal de Agendamento -->
     <div 
       v-if="isModalOpen" 
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
@@ -76,7 +84,7 @@ const props = defineProps({
   }
 })
 
-const truncatedDescription = computed(() => {
+const limiteCaracteres = computed(() => {
   return props.serviceDescription.length > 120 
     ? props.serviceDescription.slice(0, 120) + '...' 
     : props.serviceDescription
@@ -85,6 +93,9 @@ const truncatedDescription = computed(() => {
 const isModalOpen = ref(false)
 const selectedDate = ref('')
 const selectedTime = ref('')
+const showToast = ref(false)
+const toastTexto = ref('')
+const toastStatus = ref('')
 
 const openModal = () => {
   isModalOpen.value = true
@@ -98,12 +109,22 @@ const closeModal = () => {
 }
 
 const confirmSchedule = () => {
-  // Verifica se data e hora foram selecionadas
+  // verifica se data e hora foram selecionadas
   if (!selectedDate.value || !selectedTime.value) {
     alert('Por favor, selecione uma data e hora')
     return
   }
+
+  // espaço para logica de confirmação de agendamento!!!
+  showToast.value = true
+  toastTexto.value = 'Agendamento confirmado com sucesso!'
+  toastStatus.value = 'sucesso'
+
   closeModal()
+}
+
+const fecharToast = () => {
+  showToast.value = false
 }
 
 </script>
