@@ -13,19 +13,19 @@
             v-if="isPrimaryServiceState"
             v-for="service in filteredPrimaryServices"
             :key="service.id"
-            :serviceTitle="service.title"
-            :professionalName="service.professional"
-            :serviceDescription="service.description"
+            :serviceTitle="service.titulo"
+            :professionalName="service.nome"
+            :serviceDescription="service.descricao"
           />
 
           <ProfessionalCard 
             v-else
             v-for="professional in filteredProfessionals"
             :key="professional.id"
-            :professionalName="professional.name"
-            :profession="professional.profession"
-            :description="professional.description"
-            :rating="professional.rating"
+            :professionalName="professional.nome"
+            :profession="professional.profissao"
+            :description="professional.descricao"
+            :rating="professional.nota"
           />
         </div>
       </div>
@@ -48,33 +48,33 @@ const isPrimaryServiceState = ref(true)
 const primaryServices = [
   {
     id: 1,
-    title: "Remendar encanamento",
-    professional: "Mario Filho",
-    description: "Descrição simples do problema, pra não confundir, só isso mesmo."
+    titulo: "Remendar encanamento",
+    nome: "Mario Filho",
+    descricao: "Descrição simples do problema, pra não confundir, só isso mesmo."
   },
   {
     id: 2,
-    title: "Outro Serviço",
-    professional: "Outro Profissional",
-    description: "Outra descrição de serviço para teste de layout."
+    titulo: "Outro Serviço",
+    nome: "Outro Profissional",
+    descricao: "Outra descrição de serviço para teste de layout."
   },
   {
     id: 3,
-    title: "Mais um Serviço",
-    professional: "Mais um Profissional",
-    description: "Mais uma descrição para garantir o layout correto."
+    titulo: "Mais um Serviço",
+    nome: "Mais um Profissional",
+    descricao: "Mais uma descrição para garantir o layout correto."
   },
   {
     id: 4,
-    title: "Outro Serviço",
-    professional: "Outro Profissional",
-    description: "Outra descrição de serviço para teste de layout."
+    titulo: "Outro Serviço",
+    nome: "Outro Profissional",
+    descricao: "Outra descrição de serviço para teste de layout."
   },
   {
     id: 5,
-    title: "Mais um Serviço",
-    professional: "Mais um Profissional",
-    description: "Mais uma descrição para garantir o layout correto."
+    titulo: "Mais um Serviço",
+    nome: "Mais um Profissional",
+    descricao: "Mais uma descrição para garantir o layout correto."
   },
 ]
 
@@ -82,42 +82,40 @@ const primaryServices = [
 const professionals = [
   {
     id: 1,
-    name: "Miguel Ohara",
-    profession: "eletricista",
-    description: "Você deveria me contratar porque eu sou um cara mui-to legal com muitos anos de experiência no mer-cado de trabalho e eu sou extremamente compe-tente e nunca falhei na vida",
-    rating: 4.2
+    nome: "Miguel Ohara",
+    profissao: "eletricista",
+    descricao: "Você deveria me contratar porque eu sou um cara mui-to legal com muitos anos de experiência no mer-cado de trabalho e eu sou extremamente compe-tente e nunca falhei na vida",
+    nota: 4.2
   },
   {
     id: 2,
-    name: "João Silva",
-    profession: "encanador",
-    description: "Especialista em resolução de problemas hidráulicos, com mais de 15 anos de experiência. Garantia de serviço de qualidade e atendimento rápido.",
-    rating: 3.7
+    nome: "João Silva",
+    profissao: "encanador",
+    descricao: "Especialista em resolução de problemas hidráulicos, com mais de 15 anos de experiência. Garantia de serviço de qualidade e atendimento rápido.",
+    nota: 3.7
   },
   {
     id: 3,
-    name: "Pedro Santos",
-    profession: "eletricista",
-    description: "Técnico especializado em instalações elétricas residenciais e comerciais. Segurança e eficiência em primeiro lugar.",
-    rating: 5
+    nome: "Pedro Santos",
+    profissao: "eletricista",
+    descricao: "Técnico especializado em instalações elétricas residenciais e comerciais. Segurança e eficiência em primeiro lugar.",
+    nota: 5
   },
   {
     id: 4,
-    name: "Guilherme Santos",
-    profession: "encanador",
-    description: "Especialista em resolução de problemas hidráulicos, com mais de 15 anos de experiência. Garantia de serviço de qualidade e atendimento rápido.",
-    rating: 4.7
+    nome: "Guilherme Santos",
+    profissao: "encanador",
+    descricao: "Especialista em resolução de problemas hidráulicos, com mais de 15 anos de experiência. Garantia de serviço de qualidade e atendimento rápido.",
+    nota: 4.7
   },  
   {
     id: 5,
-    name: "Leonardo Young",
-    profession: "encanador",
-    description: "Especialista em resolução de problemas hidráulicos, com mais de 15 anos de experiência. Garantia de serviço de qualidade e atendimento rápido.",
-    rating: 4
+    nome: "Leonardo Young",
+    profissao: "encanador",
+    descricao: "Especialista em resolução de problemas hidráulicos, com mais de 15 anos de experiência. Garantia de serviço de qualidade e atendimento rápido.",
+    nota: 4
   },
 ]
-
-
 
 // estado de pesquisa
 const searchQuery = ref('')
@@ -132,7 +130,7 @@ const handleSearch = (searchData) => {
   searchQuery.value = searchData.query.toLowerCase()
 }
 
-// filtro de serviços primários
+// filtro de serviços
 const filteredPrimaryServices = computed(() => {
   if (!searchQuery.value) return primaryServices
   
