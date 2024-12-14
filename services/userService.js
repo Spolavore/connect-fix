@@ -15,7 +15,11 @@ const getUserInfo = () => {
 
 const userIsPrestador = () => {
     const userInfo = getUserInfo();
-    return userInfo.prestador;
+    
+    if(userInfo)
+     return userInfo.prestador;
+    
+    return false
 }
 
 export default {

@@ -14,7 +14,6 @@
 </template>
 
 <script setup>
-
 const inboxAberto  = ref(false)
 
 </script>

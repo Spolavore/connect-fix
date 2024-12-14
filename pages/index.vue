@@ -1,7 +1,7 @@
 <template>
     <NavBar/>
     <div class="p-6">
-      <ViewsHistorico v-if="usuarioPrestador"/>
+      <ViewsHistorico/>
     </div>
 </template>
 

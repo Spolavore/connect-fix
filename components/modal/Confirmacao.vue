@@ -10,9 +10,16 @@
                 <span class="text-black p-2 text-center mb-5">
                     {{ subtitulo }}
                 </span>
-                <div class="flex w-full gap-5 justify-end border-t py-3">
-                    <button class="botao-cinza p-2" @click="fecharModal">Cancelar</button>
-                    <button class="botao-azul p-2" @click="confirmarAcao">{{ textoBotaoAcao }}</button>
+                <div class="flex w-full justify-end border-t py-3">
+                    <div v-if="!carregando" class="flex gap-5">
+                        <button class="botao-cinza p-2" @click="fecharModal">Cancelar</button>
+                        <button class="botao-azul p-2" @click="confirmarAcao">
+                            {{ textoBotaoAcao }}
+                        </button>
+                    </div>
+                    <span v-else class="botao-azul p-2">
+                        <img src="/icons/loading_sphere.svg" class="animate-spin">
+                    </span>
                 </div>
             </div>
         </div>
@@ -21,14 +28,14 @@
 
 
 <script setup>
-const props = defineProps(['titulo', 'subtitulo', 'textoBotaoAcao']);
+const props = defineProps(['titulo', 'subtitulo', 'textoBotaoAcao', 'carregando']);
 const emits = defineEmits('fechar-modal', 'botao-acao-clicado');
 
 const fecharModal = () => {
     emits('fechar-modal');
 }
 const confirmarAcao = () => {
-    emits('botao-acao-clicado');
+    emits('botao-acao-clicado', 'CONFIRMAR');
 }
 
 
