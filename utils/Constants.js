@@ -7,7 +7,9 @@ const api_urls = () => {
     return {
       login: apiUrl + '/login',
       agendamentos: apiUrl + '/agendamentos',
-      atualizarStatusAgendamento: apiUrl + '/atualizarStatusAgendamento'
+      atualizarStatusAgendamento: apiUrl + '/atualizarStatusAgendamento',
+      baixarCertificado: apiUrl + '/baixarCertificado'
+
     };
   };
   

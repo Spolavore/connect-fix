@@ -6,7 +6,7 @@
       
         <img :src="icone" class="w-10 h-10 border border-neutral-300 rounded-full drop-shadow-sm" >
         <div class="flex gap-4">
-            <ButtonInbox v-if="usuarioPrestator"/>
+            <ButtonInbox v-if="usuarioPrestador"/>
             <button 
                 class="bg-neutral-50 max-w-72 px-3 h-10 rounded-md border border-neutral-200 flex items-center justify-center cursor-pointer focus:outline-none hover:bg-neutral-100"
                 @click="() => modalAberto = !modalAberto"   
@@ -30,12 +30,14 @@ import RoboPrestador from '~/public/images/robo_prestador.png'
 
 const modalAberto = ref(false);
 
-const usuarioPrestator = computed(() => {
+const usuarioPrestador = computed(() => {
     return userService.userIsPrestador() 
 });
+onMounted(() => {
+})
 
 const icone = computed(() => {
-    return usuarioPrestator ? RoboPrestador : RoboSolicitador;
+    return usuarioPrestador.value ? RoboPrestador : RoboSolicitador;
 })
 
 

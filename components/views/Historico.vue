@@ -6,7 +6,7 @@
       <div class="p-4 w-full border border-neutral-300 flex items-center rounded-lg gap-3 mt-4">
         <span class="text-xl text-neutral-700 mr-5">Filtrar</span>
         <InputPesquisa 
-          :placeholder="usuarioPrestator ? 'Pesquise por solicitador...': 'Pesquise por prestador...'"
+          :placeholder="usuarioPrestador ? 'Pesquise por solicitador...': 'Pesquise por prestador...'"
           @filtra-pesquisa="filtrarItemNome"
         />
         <InputPesquisa 
@@ -30,7 +30,7 @@
       <div class="rounded-md ">
         <!-- HEADERS -->
         <div class="w-full flex justify-between px-6 mb-2">
-          <span class="header">{{ usuarioPrestator ? 'Solicitador' : 'Prestador'}}</span>
+          <span class="header">{{ usuarioPrestador ? 'Solicitador' : 'Prestador'}}</span>
           <span class="header">Serviço</span>
           <span class="header">Data</span>
           <span class="header">Status</span>
@@ -43,7 +43,7 @@
           class=" p-6 flex justify-between items-center"
           :class="{'bg-blue-50': index % 2 == 0 , 'bg-white': index % 2 != 0 }"
         >
-      <span class="item-tam" >{{ usuarioPrestator ? item.nome_solicitador : item.nome_prestador}} </span>
+      <span class="item-tam" >{{ usuarioPrestador ? item.nome_solicitador : item.nome_prestador}} </span>
         <div class="flex flex-col item-tam h-fit ">
           <span class="text-wrap truncate" >{{ item.titulo }}</span>
           <span class="text-wrap truncate text-sm text-neutral-700" >{{ item.descricao }} </span>
@@ -51,6 +51,20 @@
         <span class="item-tam" >{{ item.dt_dia }} as {{ item.dt_horario }}</span>
         <span class="item-tam" :class="estiloStatus(item.status)">{{ item.status }}</span>      
         <span class="item-tam">
+          <div class="flex gap-2">
+              <button 
+              class="p-2 bg-white text-[#095CAE] hover:bg-[#F3F7FF] font-normal border border-[#095CAE] rounded-md text-sm w-full"
+              v-if="item.status == 'PENDENTE'"
+            >
+              Aceitar
+            </button>
+            <button 
+              class="p-2 bg-white text-[#095CAE] hover:bg-[#F3F7FF] font-normal border border-[#095CAE] rounded-md text-sm w-full"
+              v-if="item.status == 'PENDENTE'"
+            >
+              Recusar
+            </button>
+          </div>
           <button 
             class="p-2 bg-white text-[#095CAE] hover:bg-[#F3F7FF] font-normal border border-[#095CAE] rounded-md text-sm w-full"
             v-if="mostrarBotaoConfirmacao(item)"
@@ -92,6 +106,7 @@
 import api_urls from '~/utils/Constants';
 import userService from '~/services/userService';
 import requestService from '~/services/requestService';
+import axios from "axios";
 
 const itemsTabela = ref([]);
 const itemsTabelaBackup = ref([]);
@@ -100,7 +115,7 @@ const abrirModalConfirmacao = ref(false);
 const servicoSelecionado = ref({});
 const acaoSendoRealizada = ref(false);
 
-const usuarioPrestator = computed(() => {
+const usuarioPrestador = computed(() => {
     return userService.userIsPrestador() 
 });
 
@@ -118,7 +133,7 @@ const buscarServicos = async () => {
     const userInfo = userService.getUserInfo();
     try {
         const idUsuario = userInfo.id;
-        const tipoUsuario = usuarioPrestator ? 'prestador' : 'solicitador';
+        const tipoUsuario = usuarioPrestador.value ? 'prestador' : 'solicitador';
         const options = {
             url: api_urls().agendamentos + `/${idUsuario}` + `/${tipoUsuario}` ,
             callback: (response) => {
@@ -153,7 +168,7 @@ const estiloStatus = (status) => {
 }
 
 const mostrarBotaoConfirmacao = (item) => {
-  const usuarioJaConfirmou = usuarioPrestator ? item.confirmacao_prestador : item.confirmacao_solicitador;
+  const usuarioJaConfirmou = usuarioPrestador.value ? item.confirmacao_prestador : item.confirmacao_solicitador;
   return (item.status == 'EM ANDAMENTO' || item.status == 'EM CONFIRMACAO') && !usuarioJaConfirmou;
 }
 
@@ -164,7 +179,7 @@ const confirmarAcao = (item) => {
 
 const atualizarStatusServico = async (status) => {
   acaoSendoRealizada.value = true;
-  const tipoUsuario = usuarioPrestator ? 'prestador' : 'solicitador';
+  const tipoUsuario = usuarioPrestador.value ? 'prestador' : 'solicitador';
   let novoStatusServico;
 
   const idAgendamento = servicoSelecionado.value.id_agendamento;
@@ -214,7 +229,7 @@ const filtrarItemsStatus = (textoPesquisado) => {
 
 const filtrarItemNome = (textoPesquisado) => {
   const texto = textoPesquisado.value
-  const campo = usuarioPrestator ? 'nome_solicitador' : 'nome_prestador';
+  const campo = usuarioPrestador.value ? 'nome_solicitador' : 'nome_prestador';
   if(texto.length == 0) {
     itemsTabela.value = itemsTabelaBackup.value;
     return
@@ -225,8 +240,36 @@ const filtrarItemNome = (textoPesquisado) => {
   })
 }
 const baixarCertificado = async (item) => {
+    try {
+        console.log(item)
+        const tipoUsuario = usuarioPrestador.value ? 'PRESTADOR' : 'SOLICITADOR';
+        const userInfo = {
+          tipoUsuario: tipoUsuario,
+          nomePrestador: item.nome_prestador,
+          nomeSolicitador: item.nome_solicitador,
+          data: item.dt_dia,
+          servico: item.titulo,
+        }
+        const response = await axios.post(api_urls().baixarCertificado, { userInfo }, {
+            responseType: 'blob', // Importante para lidar com arquivos binários
+        });
 
-}
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'certificado_conclusao.pdf';
+        document.body.appendChild(link);
+        link.click();
+
+        // Limpa o link temporário
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+    } catch (error) {
+        console.error('Erro ao baixar o certificado:', error);
+    }
+};
 
 
 </script>
