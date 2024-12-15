@@ -1,32 +1,21 @@
 <template>
-  <NavBar />
-  <div v-if="ehSolicitador">
-    <ViewsCatalogo&profissionais />
-  </div>
-  <div v-else>
-    <h1>aqui ficarão as coisas do prestador</h1>
-  </div>
+  <NavBar class="z-50"/>
+    <div class="p-6 flex flex-col gap-6 z-40">
+      <ViewsCatalogo&profissionais v-if="!usuarioPrestador />
+      <ViewsMeusServicos
+        v-if="usuarioPrestador"
+      />
+      <ViewsHistorico/>
+    </div>
   <RodaPe/>
 </template>
 
 <script setup>
-import { jwtDecode } from 'jwt-decode'
-import { computed } from 'vue'
+import userService from '~/services/userService';
 
-// verifica se é um solicitador, usando o localstorage
-const ehSolicitador = computed(() => {
-  if (typeof window !== 'undefined') {
-    const userInfo = localStorage.getItem('user-info')
-    if (userInfo) {
-      try {
-        const decodedToken = jwtDecode(userInfo)
-        return !decodedToken.prestador 
-      } catch (error) {
-        console.error('Erro ao decodificar token', error)
-        return false
-      }
-    }  
-  }
-  return false
+const usuarioPrestador = computed(() => {
+  const userInfo = userService.getUserInfo();
+  return userInfo.prestador ? userInfo.prestador : false;
 })
+
 </script>
