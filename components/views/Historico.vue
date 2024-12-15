@@ -185,6 +185,7 @@ const estiloStatus = (status) => {
 }
 
 const mostrarBotaoConfirmacao = (item) => {
+  console.log(item)
   const usuarioJaConfirmou = usuarioPrestador.value ? item.confirmacao_prestador : item.confirmacao_solicitador;
   return (item.status == 'EM ANDAMENTO' || item.status == 'EM CONFIRMACAO') && !usuarioJaConfirmou;
 }
