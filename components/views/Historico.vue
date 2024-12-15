@@ -61,7 +61,7 @@
           <span class="text-wrap truncate" >{{ item.titulo }}</span>
           <span class="text-wrap truncate text-sm text-neutral-700" >{{ item.descricao }} </span>
         </div>
-        <span class="item-tam" >{{ item.dt_dia }} as {{ item.dt_horario }}</span>
+        <span class="item-tam" >{{ formataData(item.dt_dia ) }} as {{ item.dt_horario }}</span>
         <span class="item-tam" :class="estiloStatus(item.status)">{{ item.status }}</span>      
         <span class="item-tam">
           <div class="flex gap-2" v-if="usuarioPrestador">
@@ -253,6 +253,11 @@ const filtrarItemsStatus = (textoPesquisado) => {
   itemsTabela.value = itemsTabelaBackup.value.filter( item => {
       return item.status.toUpperCase().includes(texto.toUpperCase())
   })
+}
+
+const formataData = (data) =>{
+  if(!data) return
+  return Utils.formataData(data);
 }
 
 const filtrarItemNome = (textoPesquisado) => {
