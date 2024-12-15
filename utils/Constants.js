@@ -9,7 +9,8 @@ const api_urls = () => {
       agendamentos: apiUrl + '/agendamentos',
       atualizarStatusAgendamento: apiUrl + '/atualizarStatusAgendamento',
       baixarCertificado: apiUrl + '/baixarCertificado',
-      servicos: apiUrl + '/servico'
+      servicos: apiUrl + '/servico',
+      criar_servico: apiUrl + '/servico'
 
     };
   };

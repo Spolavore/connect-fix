@@ -29,7 +29,7 @@
 
 <script setup>
 const props = defineProps(['titulo', 'subtitulo', 'textoBotaoAcao', 'carregando']);
-const emits = defineEmits('fechar-modal', 'botao-acao-clicado');
+const emits = defineEmits(['fechar-modal', 'botao-acao-clicado']);
 
 const fecharModal = () => {
     emits('fechar-modal');

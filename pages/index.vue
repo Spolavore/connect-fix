@@ -1,6 +1,6 @@
 <template>
-    <NavBar/>
-    <div class="p-6 flex flex-col gap-6">
+    <NavBar class="z-50"/>
+    <div class="p-6 flex flex-col gap-6 z-40">
       <ViewsMeusServicos
         v-if="usuarioPrestador"
       />
