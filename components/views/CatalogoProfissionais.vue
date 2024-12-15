@@ -5,8 +5,8 @@
         @search="handleSearch"
         :is-primary-state="isPrimaryServiceState" 
       />
-      <div class="flex justify-center w-full">
-        <div class="w-3/4 grid grid-cols-3 gap-4">
+      <div class="flex w-full">
+        <div class="w-full grid grid-cols-3 gap-4">
           <ServiceCard 
             v-if="isPrimaryServiceState"
             v-for="service in filteredPrimaryServices"
@@ -14,7 +14,10 @@
             :serviceTitle="service.titulo"
             :professionalName="service.nome"
             :serviceDescription="service.descricao"
+            :id-servico="service.id"
+            :id-prestador="service.idPrestador"
           />
+
   
           <ProfessionalCard 
             v-else
@@ -52,12 +55,14 @@
   const { data: services } = await useFetch('http://localhost:6969/servico', {
     method: 'GET',
     transform: (data) => data.map(service => ({
-      id: service.id,
+      id: service.id_servico,
       titulo: service.titulo,
       nome: service.titulo,         // trocar para nome quando tiver a coluna na tabela
-      descricao: service.descricao
+      descricao: service.descricao,
+      idPrestador: service.id_prestador
     }))
   })
+  console.log(services)
   
   // dados prestadores
   const { data: professionals } = await useFetch('http://localhost:6969/prestador', {

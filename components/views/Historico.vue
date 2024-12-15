@@ -64,16 +64,20 @@
         <span class="item-tam" >{{ item.dt_dia }} as {{ item.dt_horario }}</span>
         <span class="item-tam" :class="estiloStatus(item.status)">{{ item.status }}</span>      
         <span class="item-tam">
-          <div class="flex gap-2">
+          <div class="flex gap-2" v-if="usuarioPrestador">
               <button 
-              class="p-2 bg-white text-[#095CAE] hover:bg-[#F3F7FF] font-normal border border-[#095CAE] rounded-md text-sm w-full"
+              class="p-2 bg-white text-green-500 hover:bg-green-50 font-normal border border-green-500 rounded-md text-sm w-full"
               v-if="item.status == 'PENDENTE'"
+              @click="atualizarStatusServico('ACEITAR', item)"
+
+              
             >
               Aceitar
             </button>
             <button 
-              class="p-2 bg-white text-[#095CAE] hover:bg-[#F3F7FF] font-normal border border-[#095CAE] rounded-md text-sm w-full"
+              class="p-2 bg-white text-red-500 hover:bg-red-50 font-normal border border-red-500 rounded-md text-sm w-full"
               v-if="item.status == 'PENDENTE'"
+              @click="atualizarStatusServico('RECUSAR', item)"
             >
               Recusar
             </button>
@@ -190,8 +194,12 @@ const confirmarAcao = (item) => {
   servicoSelecionado.value = item;
 }
 
-const atualizarStatusServico = async (status) => {
+const atualizarStatusServico = async (status, itemSelecionado = null) => {
   acaoSendoRealizada.value = true;
+  
+  if(itemSelecionado)
+    servicoSelecionado.value = itemSelecionado;
+
   const tipoUsuario = usuarioPrestador.value ? 'prestador' : 'solicitador';
   let novoStatusServico;
 
@@ -205,6 +213,12 @@ const atualizarStatusServico = async (status) => {
       else if (statusServico == 'EM CONFIRMACAO'){
         novoStatusServico = 'CONCLUIDO';
       }
+      break;
+    case 'ACEITAR':
+      novoStatusServico = 'EM ANDAMENTO'
+      break;
+    case 'RECUSAR':
+      novoStatusServico = 'RECUSADO'
       break;
   }
   

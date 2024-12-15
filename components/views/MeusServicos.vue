@@ -24,7 +24,7 @@
         </div>
         <div 
             v-else-if="temServicos"
-            class="flex gap-2 flex-wrap"
+            class="w-full grid grid-cols-4 max-[851px]:grid-cols-2 gap-4"
         >
             <ServiceCard
                 v-for="servico, index in servicosPrestadores"
@@ -33,7 +33,6 @@
                 :serviceDescription="servico.descricao"
                 :key="index" 
                 :mostrar-botao="false"
-                class="basis-1/4 flex"
             />
         </div>
         <div 

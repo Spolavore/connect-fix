@@ -66,7 +66,8 @@ const criarServico = async () => {
         data: {
             idPrestador: idPrestador,
             titulo: titulo.value,
-            descricao: descricao.value
+            descricao: descricao.value,
+            criado_por: 'PRESTADOR'
         },
         callback: () => {
             emits('atualizar-lista');

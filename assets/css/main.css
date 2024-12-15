@@ -15,7 +15,7 @@ html {
   body {
     scrollbar-width: thin;          /* "auto" or "thin" */
     scrollbar-color: #e1e1e1 transparent;   /* scroll thumb and track */
-    overflow-x: hidden;
+    /* overflow-x: hidden; */
 
   }
   

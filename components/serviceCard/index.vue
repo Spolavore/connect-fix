@@ -72,9 +72,17 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import requestService from '~/services/requestService';
+import userService from '~/services/userService';
+import api_urls from '~/utils/Constants';
 
 // props do componente
 const props = defineProps({
+  idServico: {
+    type: Number,
+    required: false,
+    default: -1
+  },
   serviceTitle: {
     type: String,
     required: true
@@ -92,7 +100,13 @@ const props = defineProps({
     type: Boolean,
     default: true,
     required: false
-  }
+  },
+  idPrestador: {
+    type: Number,
+    required: false,
+    default: -1
+  },
+
 })
 
 // limita o número de caracteres da descrição
@@ -127,12 +141,32 @@ const closeModal = () => {
 }
 
 // Confirma o agendamento
-const confirmSchedule = () => {
-  showToast.value = true
-  toastTexto.value = 'Agendamento confirmado com sucesso!'
-  toastStatus.value = 'sucesso'
+const confirmSchedule = async() => {
+  const userInfo = userService.getUserInfo();
+  const options = {
+    url: api_urls().agendar_servico,
+    data: {
+      id_servico: props.idServico,
+      id_prestador: props.idPrestador,
+      id_solicitador: userInfo.id,
+      dia: selectedDate.value,
+      horario: selectedTime.value,
+      criado_por: 'SOLICITADOR'
+    },
+    callback: () => {
+      showToast.value = true
+      toastTexto.value = 'Agendamento confirmado com sucesso!'
+      toastStatus.value = 'sucesso'
+      closeModal();
 
-  closeModal()
+    },
+    errorCallback: () => {
+      showToast.value = true
+      toastTexto.value = 'Falha ao agendar!'
+      toastStatus.value = 'erro'
+    }
+  }
+  await requestService.postRequest(options);
 }
 
 const fecharToast = () => {

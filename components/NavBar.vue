@@ -1,7 +1,7 @@
 <template>
     <div 
         v-if="mostrarNavBar" 
-        class="w-screen h-20 sticky top-0 bg-white drop-shadow-md flex items-center px-4 justify-between"
+        class="w-full h-20 sticky top-0 bg-white drop-shadow-md flex items-center px-4 justify-between"
     >
       
         <img :src="icone" class="w-10 h-10 border border-neutral-300 rounded-full drop-shadow-sm" >
