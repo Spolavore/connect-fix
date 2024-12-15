@@ -1,21 +1,25 @@
 import {jwtDecode} from 'jwt-decode';
 
 const getUserInfo = () => {
-    const userInfo = localStorage.getItem('user-info');
-    if(userInfo){
-        return jwtDecode(userInfo);
-    }
-    else {
-        return navigateTo('/login');
-    }
-
-    
+    if(isClientSide()){
+        const userInfo = localStorage.getItem('user-info');
+        if(userInfo){
+            return jwtDecode(userInfo);
+        }
+        else {
+            return navigateTo('/login');
+        }
+    } 
 }
 
 
 const userIsPrestador = () => {
     const userInfo = getUserInfo();
-    return userInfo.prestador;
+    
+    if(userInfo)
+     return userInfo.prestador;
+    
+    return false
 }
 
 export default {

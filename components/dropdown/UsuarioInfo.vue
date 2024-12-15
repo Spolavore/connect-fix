@@ -1,7 +1,7 @@
 <template>
 <div 
     v-if="visivel"
-    class="absolute top-16 right-4 drop-shadow-lg bg-neutral-100 w-56 flex flex-col rounded-md"
+    class="absolute top-16 right-4 drop-shadow-lg bg-neutral-100 w-56 flex flex-col rounded-md z-40"
 >
     <div class="item" @click="() => navigateTo('/perfil')">Perfil</div>
     <div class="item" @click="() => navigateTo('/histórico')">Histórico</div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="overflow-hidden">
+  <div class="overflow-hidden index">
     <div
       class="w-96 h-20 bg-white absolute right-0 top-5 flex border border-neutral-200 rounded-s-lg drop-shadow-md animacaoToast "
     >
@@ -50,6 +50,9 @@ const iconeToast = computed(() => {
 </script>
 
 <style scoped>
+.index {
+  z-index: 9999;
+}
 @keyframes animacaoEntrada {
   0% {
     opacity: 0;
