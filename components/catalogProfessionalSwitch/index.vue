@@ -1,6 +1,6 @@
 <template>
   <div class="flex w-full py-8">
-    <div class="flex flex-col">
+    <div class="flex flex-col w-full">
       <div class="flex items-center justify-between mb-4">
         <h1 class="text-4xl font-bold text-[#1E40AF]">
           {{ isPrimaryState ? 'CATÁLOGO DE SERVIÇOS' : 'PROFISSIONAIS A POSTOS' }}
@@ -9,19 +9,19 @@
       <p class="text-lg text-black">
         {{ isPrimaryState ? 'Soluções rápidas e confiáveis em elétrica, eletrônica e encanamento, feitas por quem entende do assunto!' : 'Soluções rápidas e confiáveis feitas por quem entende do assunto!' }}
       </p>
-      <div class="mt-4 flex space-x-4">
+      <div class="mt-4 flex space-x-4 items-center">
         <button 
           @click="toggleServices" 
-          class="inline-block basis-1/2 py-2 border-2 border-blue-700 text-blue-700 font-semibold rounded-lg transition-all hover:bg-blue-700 hover:text-white min-w-[200px]"
+          class="inline-block w-[375px] py-2 border-2 border-blue-700 text-blue-700 font-semibold rounded-lg transition-all hover:bg-blue-700 hover:text-white"
         >
           {{ isPrimaryState ? 'VER PRESTADORES DISPONÍVEIS' : 'VISUALIZAR CATÁLOGO' }}
         </button>
         
-        <div v-if="!isPrimaryState" class="relative w-[40%]">
+        <div v-if="!isPrimaryState" class="relative w-[375px]">
           <select 
             v-model="selectedFilter"
             @change="onFilterChange"
-            class="basis-1/2 px-4 py-2 border-2 border-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+            class="w-full px-4 py-2 border-2 border-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
           >
             <option value='' disabled @click="resetFilter">Filtrar por profissional</option>
             <option value="eletricista">Eletricista</option>
@@ -29,17 +29,34 @@
             <option value="todos">Todos</option>
           </select>
           <div 
-            @click="resetFilter" 
-            class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 cursor-pointer"
+            class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none"
           >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
           </div>
         </div>
-        
+
+        <div v-else class="relative w-[375px]">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
           <input 
             v-model="searchQuery" 
             placeholder="Buscar por tipo de serviço" 
-            class="basis-1/2 px-4 py-2 border-2 border-blue-700 rounded-lg pr-10 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="w-full px-10 py-2 border-2 border-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
+        </div>
+
+        <button 
+          class="botao-azul p-2 pr-8 pl-8 text-md flex gap-2 items-center"
+          @click="buscarServicos"
+        > 
+          <img src="/icons/refreash.svg" class="w-5 h-5"/>
+          Atualizar
+        </button>
       </div>
     </div>
   </div>
@@ -55,7 +72,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['toggle-services', 'search'])
+const emit = defineEmits(['toggle-services', 'search', 'refresh-dados'])
 
 const searchQuery = ref('')
 const selectedFilter = ref('')
@@ -77,6 +94,11 @@ const resetFilter = () => {
     query: '', 
     type: 'professional' 
   })
+}
+
+// Substitui o placeholder anterior
+const buscarServicos = () => {
+  emit('refresh-dados')
 }
 
 watch(searchQuery, (newQuery) => {
