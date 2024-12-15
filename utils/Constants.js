@@ -11,7 +11,8 @@ const api_urls = () => {
       baixarCertificado: apiUrl + '/baixarCertificado',
       servicos: apiUrl + '/servico',
       criar_servico: apiUrl + '/servico',
-      agendar_servico: apiUrl + '/realizarAgendamento'
+      agendar_servico: apiUrl + '/realizarAgendamento',
+      requerir_agendamento: apiUrl + '/requerirAgendamento'
 
     };
   };

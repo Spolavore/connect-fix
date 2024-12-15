@@ -27,6 +27,7 @@
             :profession="professional.profissao"
             :description="professional.descricao"
             :rating="professional.nota"
+            :id-prestador="professional.id"
           />
         </div>
       </div>
@@ -62,7 +63,6 @@
       idPrestador: service.id_prestador
     }))
   })
-  console.log(services)
   
   // dados prestadores
   const { data: professionals } = await useFetch('http://localhost:6969/prestador', {
@@ -75,6 +75,7 @@
       nota: professional.avaliacao
     }))
   })
+  console.log(professionals);
   
   // estado de pesquisa
   const searchQuery = ref('')

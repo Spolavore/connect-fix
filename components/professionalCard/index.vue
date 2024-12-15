@@ -123,6 +123,9 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import requestService from '~/services/requestService';
+import userService from '~/services/userService';
+import api_urls from '~/utils/Constants';
 
 const props = defineProps({
   professionalName: {
@@ -143,6 +146,11 @@ const props = defineProps({
     type: Number,
     required: true,
     validator: (value) => value >= 0 && value <= 10
+  },
+  idPrestador: {
+    type: Number,
+    required: false,
+    default: -1
   }
 })
 
@@ -189,13 +197,38 @@ const submitServiceRequest = () => {
     date: selectedDate.value,
     time: selectedTime.value
   })
-  
-  // mostrando toast de sucesso
-  showToast.value = true
-  toastTexto.value = 'Solicitação de serviço enviada com sucesso!'
-  toastStatus.value = 'sucesso'
-  
-  closeModal()
+  requerirAgendamento();
+
+}
+
+const requerirAgendamento = async () => {
+  const userInfo = userService.getUserInfo();
+  const options = {
+    url: api_urls().requerir_agendamento,
+    data: {
+      titulo : serviceTitle.value,
+      descricao: serviceDescription.value,
+      id_prestador: props.idPrestador,
+      id_solicitador: userInfo.id,
+      dia: selectedDate.value,
+      horario: selectedTime.value,
+      criado_por: 'SOLICITADOR'
+    },
+    callback: () => {
+      // mostrando toast de sucesso
+      showToast.value = true
+      toastTexto.value = 'Solicitação de serviço enviada com sucesso!'
+      toastStatus.value = 'sucesso'
+      closeModal();
+    },
+    errorCallback: () => {
+      // mostrando toast de sucesso
+      showToast.value = true
+      toastTexto.value = 'Erro na solicitação de serviço'
+      toastStatus.value = 'erro'
+    }
+  }
+  await requestService.postRequest(options);
 }
 
 const fecharToast = () => {
