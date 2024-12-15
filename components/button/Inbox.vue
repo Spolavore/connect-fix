@@ -9,8 +9,8 @@
         @click="() => inboxAberto = !inboxAberto"
       />
     </div>
-    <DropdownInbox v-if="inboxAberto"/>
   </div>
+  <DropdownInbox v-if="inboxAberto"/>
 </template>
 
 <script setup>

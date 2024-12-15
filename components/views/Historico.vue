@@ -1,8 +1,21 @@
 <template>
   <div class="flex flex-col gap-6">
     <div class="flex flex-col gap-1">
-      <h2 class="text-2xl text-blue-700 font-semibold flex flex-col ">Histórico e Agendamentos</h2>
-      <span cass="text-neutral-700 text-sm font-semibold ">Veja uma lista com todos os agendamentos relacionados ao seu perfil!</span>
+      <div class="flex w-full justify-between">
+        <div class="flex flex-col gap-2">
+          <h2 class="text-2xl text-blue-700 font-semibold flex flex-col ">Histórico e Agendamentos</h2>
+          <span cass="text-neutral-700 text-sm font-semibold ">Veja uma lista com todos os agendamentos relacionados ao seu perfil!</span>
+        </div>
+        <div>
+          <button 
+              class="botao-azul  p-3 text-md flex gap-2 items-center"
+              @click="buscarServicos"
+            > 
+                <img src="/icons/refreash.svg" class="w-5 h-5"/>
+                Atualizar
+          </button>
+        </div>
+      </div>
       <div class="p-4 w-full border border-neutral-300 flex items-center rounded-lg gap-3 mt-4">
         <span class="text-xl text-neutral-700 mr-5">Filtrar</span>
         <InputPesquisa 

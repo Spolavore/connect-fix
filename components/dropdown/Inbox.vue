@@ -73,7 +73,7 @@ const buscarServicos = async () => {
     try {
         const idPrestador = userService.getUserInfo().id;
         const options = {
-            url: api_urls().agendamentos + `/${idPrestador}` + '/PENDENTE'
+            url: api_urls().agendamentos + `/${idPrestador}` + '/PRESTADOR/PENDENTE'
         }
         const agendamentosPendentes = await requestService.getRequest(options);
         agendamentos.value = agendamentosPendentes;
