@@ -1,6 +1,9 @@
 <template>
     <NavBar/>
-    <div class="p-6">
+    <div class="p-6 flex flex-col gap-6">
+      <ViewsMeusServicos
+        v-if="usuarioPrestador"
+      />
       <ViewsHistorico/>
     </div>
 </template>

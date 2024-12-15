@@ -8,7 +8,8 @@ const api_urls = () => {
       login: apiUrl + '/login',
       agendamentos: apiUrl + '/agendamentos',
       atualizarStatusAgendamento: apiUrl + '/atualizarStatusAgendamento',
-      baixarCertificado: apiUrl + '/baixarCertificado'
+      baixarCertificado: apiUrl + '/baixarCertificado',
+      servicos: apiUrl + '/servico'
 
     };
   };
