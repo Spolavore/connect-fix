@@ -131,7 +131,6 @@ import api_urls from '~/utils/Constants';
 import userService from '~/services/userService';
 import requestService from '~/services/requestService';
 import axios from "axios";
-import Avaliacao from '../modal/Avaliacao.vue';
 
 const itemsTabela = ref([]);
 const itemsTabelaBackup = ref([]);
@@ -271,7 +270,7 @@ const enviarAvaliacao = async (dadosAvaliacao) => {
       ? servicoSelecionado.value.email_solicitador 
       : servicoSelecionado.value.email_prestador;
       let urlAvalicao = 0;
-    if (tipoUsuario == 'prestador') { 
+      if (tipoUsuario == 'prestador') { 
       urlAvalicao = api_urls().enviarAvaliacaoPrestador + `/${emailAvaliado}` + `/${dadosAvaliacao.nota}` 
     }
     else {

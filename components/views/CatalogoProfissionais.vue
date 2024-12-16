@@ -25,7 +25,6 @@
           :id-prestador="service.idPrestador"
         />
 
-
         <ProfessionalCard 
           v-else
           v-for="professional in filteredProfessionals"
@@ -56,6 +55,17 @@ const props = defineProps({
   }
 })
 
+// função para representar no maximo 2 casas decimais
+function formatRating(rating) {
+  // Verifica se o número tem casas decimais
+  if (Number.isInteger(rating)) {
+  // Retorna número inteiro sem casas decimais
+    return rating.toString() 
+  }
+  // Se tiver casas decimais, mantém no máximo 2
+  return Number(rating.toFixed(2))
+}
+
 // Estado dos serviços
 const isPrimaryServiceState = ref(true)
 const carregando = ref(true);
@@ -79,7 +89,7 @@ const buscar = async () => {
       nome: professional.nome,
       profissao: professional.profissao,
       descricao: professional.email,
-      nota: professional.avaliacao
+      nota: formatRating(professional.avaliacao)
     }))
   })
   return {services, professionals}
@@ -93,7 +103,6 @@ const atualizar = async () => {
 // Buscar os dados dos serviços da API
 let { services, professionals } = await buscar();
 carregando.value = false;
-console.log(professionals);
 
 // estado de pesquisa
 const searchQuery = ref('')
@@ -119,7 +128,8 @@ const filteredPrimaryServices = computed(() => {
   if (!searchQuery.value) return services.value || []
   
   return (services.value || []).filter(service => 
-    service.titulo.toLowerCase().includes(searchQuery.value.toLowerCase())
+    service.titulo.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+    service.descricao.toLowerCase().includes(searchQuery.value.toLowerCase())
   )
 })
 

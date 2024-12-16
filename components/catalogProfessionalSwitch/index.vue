@@ -7,7 +7,7 @@
         </h1>
       </div>
       <p class="text-lg text-black">
-        {{ isPrimaryState ? 'Soluções rápidas e confiáveis em elétrica, eletrônica e encanamento, feitas por quem entende do assunto!' : 'Soluções rápidas e confiáveis feitas por quem entende do assunto!' }}
+        {{ isPrimaryState ? 'Soluções rápidas e confiáveis em elétrica, eletrônica e encanamento, feitas por quem entende do assunto!' : 'Profissionais qualificados e experientes, prontos para solucionar seus problemas com eficiência e competência!' }}
       </p>
       <div class="mt-4 flex space-x-4 items-center">
         <button 
@@ -23,7 +23,7 @@
             @change="onFilterChange"
             class="w-full px-4 py-2 border-2 border-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
           >
-            <option value='' disabled @click="resetFilter">Filtrar por profissional</option>
+            <option value='' disabled>Filtrar por profissional</option>
             <option value="eletricista">Eletricista</option>
             <option value="encanador">Encanador</option>
             <option value="todos">Todos</option>
@@ -78,6 +78,9 @@ const searchQuery = ref('')
 const selectedFilter = ref('')
 
 const toggleServices = () => {
+  // Resetar os inputs quando trocar de estado
+  searchQuery.value = ''
+  selectedFilter.value = ''
   emit('toggle-services')
 }
 
@@ -88,15 +91,6 @@ const onFilterChange = () => {
   })
 }
 
-const resetFilter = () => {
-  selectedFilter.value = ''
-  emit('search', { 
-    query: '', 
-    type: 'professional' 
-  })
-}
-
-// Substitui o placeholder anterior
 const buscarServicos = () => {
   emit('refresh-dados')
 }
