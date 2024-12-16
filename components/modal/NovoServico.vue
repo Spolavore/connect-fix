@@ -1,21 +1,29 @@
 <template>
-    <div class="h-screen w-full bg-[#9CA3AFA6] absolute left-0 top-0  flex items-center justify-center">
-        <div class="bg-white w-[444px] h-fit pt-5 rounded-md">
-            <div class="border-b w-full px-3 pb-5 flex justify-between items-center">
-                <span class="text-neutral-700 font-semibold"> Criar novo serviço </span>
-                <img src="/icons/close_icon.svg" class="cursor-pointer" @click="fecharModal" />
+    <div class="fixed inset-0 z-50 overflow-y-auto bg-[#9CA3AFA6] flex items-center justify-center">
+        <div class="bg-white w-[444px] max-h-[90vh] overflow-y-auto rounded-md shadow-lg">
+            <div class="sticky top-0 bg-white border-b w-full px-3 py-4 flex justify-between items-center z-10">
+                <div class="w-6 h-6">
+                </div>
+                <span class="text-neutral-700 font-semibold text-center flex-grow"> 
+                    Criar novo serviço 
+                </span>
+                <img 
+                    src="/icons/close_icon.svg" 
+                    class="cursor-pointer w-6 h-6" 
+                    @click="fecharModal" 
+                />
             </div>
-            <div class="px-3 h-full justify-between flex flex-col items-center">
+            <div class="px-3 py-5 h-full justify-between flex flex-col items-center">
                 <img src="/icons/add_servico.svg" class="w-16 h-16 mt-5" />
-                <label class="w-3/4">
+                <label class="w-3/4 mb-4">
                     Nome
                     <input type="text" v-model="titulo" class="input-padrao">
                 </label>
-                <label class="w-3/4 mb-10 mt-5">
+                <label class="w-3/4 mb-10">
                     Descrição
                     <textarea type="text" v-model="descricao" class="input-padrao"/>
                 </label>
-                <div class="flex w-full justify-end border-t py-3">
+                <div class="sticky bottom-0 bg-white border-t w-full py-3 flex justify-end">
                     <div v-if="!carregando" class="flex gap-5">
                         <button class="botao-cinza p-2" @click="fecharModal">Cancelar</button>
                         <button class="botao-verde p-2" @click="criarServico">
@@ -29,11 +37,12 @@
             </div>
         </div>
     </div>
-    <Toast 
-      v-if="mostrarToast" 
-      texto="Preencha todos os campos" 
-      status="erro"  
-      @fecharToast="() => mostrarToast = false"/>
+    <Toast
+        v-if="mostrarToast"
+        texto="Preencha todos os campos"
+        status="erro"
+        @fecharToast="() => mostrarToast = false"
+    />
 </template>
 
 <script setup>
