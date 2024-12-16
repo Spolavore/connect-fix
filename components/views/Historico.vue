@@ -117,6 +117,13 @@
     @fechar-modal="() => abrirModalConfirmacao = false"
     @botao-acao-clicado="atualizarStatusServico"
   />
+  <ModalAvaliacao 
+        v-if="abrirModalAvaliacao"
+        :usuarioPrestador="usuarioPrestador"
+        :servicoSelecionado="servicoSelecionado"
+        @fechar-modal="fecharModalAvaliacao"
+        @enviar-avaliacao="enviarAvaliacao"
+    />
 </template>
 
 <script setup>
@@ -129,6 +136,7 @@ const itemsTabela = ref([]);
 const itemsTabelaBackup = ref([]);
 const carregandoHistorico = ref(true);
 const abrirModalConfirmacao = ref(false);
+const abrirModalAvaliacao = ref(false);
 const servicoSelecionado = ref({});
 const acaoSendoRealizada = ref(false);
 
@@ -195,16 +203,17 @@ const confirmarAcao = (item) => {
   servicoSelecionado.value = item;
 }
 
-const atualizarStatusServico = async (status, itemSelecionado = null) => {
+const atualizarStatusServico = async (status, itemSelecionado = null) => {   
   acaoSendoRealizada.value = true;
   
   if(itemSelecionado)
     servicoSelecionado.value = itemSelecionado;
-
+  
   const tipoUsuario = usuarioPrestador.value ? 'prestador' : 'solicitador';
   let novoStatusServico;
-
+  
   const idAgendamento = servicoSelecionado.value.id_agendamento;
+  
   switch(status){
     case 'CONFIRMAR':
       const statusServico = servicoSelecionado.value.status;
@@ -233,15 +242,62 @@ const atualizarStatusServico = async (status, itemSelecionado = null) => {
     callback: () => {
       acaoSendoRealizada.value = false;
       buscarServicos();
+      
+      if (novoStatusServico === 'CONCLUIDO' || novoStatusServico === 'EM CONFIRMACAO') {
+        abrirModalAvaliacao.value = true;
+      }
     },
     errorCallback: (error) => {
       alert('Erro na requisicao')
       console.error(error);
     }
   }
+  
   acaoSendoRealizada.value = false;
   await requestService.postRequest(options);
 }
+
+const fecharModalAvaliacao = () => {
+  abrirModalAvaliacao.value = false;
+}
+
+const enviarAvaliacao = async (dadosAvaliacao) => {
+  try {
+    const tipoUsuario = usuarioPrestador.value ? 'prestador' : 'solicitador';
+    
+    // Determinar o email do usuário a ser avaliado
+    const emailAvaliado = tipoUsuario == 'prestador' 
+      ? servicoSelecionado.value.email_solicitador 
+      : servicoSelecionado.value.email_prestador;
+      let urlAvalicao = 0;
+      if (tipoUsuario == 'prestador') { 
+      urlAvalicao = api_urls().enviarAvaliacaoPrestador + `/${emailAvaliado}` + `/${dadosAvaliacao.nota}` 
+    }
+    else {
+      urlAvalicao = api_urls().enviarAvaliacaoSolicitador + `/${emailAvaliado}` + `/${dadosAvaliacao.nota}` 
+    }
+
+    const options = {
+      url: urlAvalicao,
+      data: {
+        email: emailAvaliado,
+        nota: dadosAvaliacao.nota,
+        tipoUsuario: tipoUsuario
+      },
+      callback: () => {
+        abrirModalAvaliacao.value = false;
+        abrirModalConfirmacao.value = false;
+      },
+      errorCallback: (error) => {
+        console.error('Erro ao enviar avaliação', error);
+      }
+    }
+    await requestService.postRequest(options);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 
 const filtrarItemsStatus = (textoPesquisado) => {
 

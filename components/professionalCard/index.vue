@@ -92,6 +92,7 @@
             <input 
               type="date" 
               v-model="selectedDate" 
+              :min="getCurrentDate()"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
@@ -102,6 +103,8 @@
             <input 
               type="time" 
               v-model="selectedTime" 
+              min="06:00"
+              max="23:00"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
@@ -154,6 +157,15 @@ const props = defineProps({
   }
 })
 
+// função para obter a data atual no formato YYYY-MM-DD
+const getCurrentDate = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 // variaveis toast 
 const showToast = ref(false)
 const toastTexto = ref('')
@@ -184,11 +196,42 @@ const closeModal = () => {
   selectedTime.value = ''
 }
 
+// Validação de data e horário
+const validateDateTime = () => {
+  const today = new Date();
+  const selectedDateTime = new Date(`${selectedDate.value}T${selectedTime.value}`);
+  
+  // Se a data selecionada é hoje, verifique o horário
+  if (selectedDate.value === getCurrentDate()) {
+    const currentTime = new Date();
+    const [hours, minutes] = selectedTime.value.split(':').map(Number);
+    
+    // Verifica se o horário está entre 6h e 23h
+    if (hours < 6 || hours > 23) {
+      alert('Por favor, selecione um horário entre 6h e 23h');
+      return false;
+    }
+    
+    // Verifica se o horário selecionado não é anterior ao horário atual
+    if (selectedDateTime < currentTime) {
+      alert('Não é possível selecionar um horário passado');
+      return false;
+    }
+  }
+  
+  return true;
+}
+
 const submitServiceRequest = () => {
   // Verifica se todos os campos foram preenchidos
   if (!serviceTitle.value || !serviceDescription.value || !selectedDate.value || !selectedTime.value) {
     alert('Por favor, preencha todos os campos')
     return
+  }
+
+  // Valida data e hora antes de submeter
+  if (!validateDateTime()) {
+    return;
   }
 
   console.log('Service Request:', {
@@ -198,7 +241,6 @@ const submitServiceRequest = () => {
     time: selectedTime.value
   })
   requerirAgendamento();
-
 }
 
 const requerirAgendamento = async () => {
