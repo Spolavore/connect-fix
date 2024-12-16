@@ -18,7 +18,6 @@
           :id-prestador="service.idPrestador"
         />
 
-
         <ProfessionalCard 
           v-else
           v-for="professional in filteredProfessionals"
@@ -49,11 +48,22 @@ const props = defineProps({
   }
 })
 
+// função para representar no maximo 2 casas decimais
+function formatRating(rating) {
+  // Verifica se o número tem casas decimais
+  if (Number.isInteger(rating)) {
+  // Retorna número inteiro sem casas decimais
+    return rating.toString() 
+  }
+  // Se tiver casas decimais, mantém no máximo 2
+  return Number(rating.toFixed(2))
+}
+
 // Estado dos serviços
 const isPrimaryServiceState = ref(true)
 
 // Buscar os dados dos serviços da API
-const { data: services } = await useFetch('http://localhost:6969/servico', {
+const { data: services, refresh: refreshServices } = await useFetch('http://localhost:6969/servico', {
   method: 'GET',
   transform: (data) => data.map(service => ({
     id: service.id_servico,
@@ -72,7 +82,7 @@ const { data: professionals } = await useFetch('http://localhost:6969/prestador'
     nome: professional.nome,
     profissao: professional.profissao,
     descricao: professional.email,
-    nota: professional.avaliacao
+    nota: formatRating(professional.avaliacao)
   }))
 })
 
@@ -100,7 +110,8 @@ const filteredPrimaryServices = computed(() => {
   if (!searchQuery.value) return services.value || []
   
   return (services.value || []).filter(service => 
-    service.titulo.toLowerCase().includes(searchQuery.value.toLowerCase())
+    service.titulo.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+    service.descricao.toLowerCase().includes(searchQuery.value.toLowerCase())
   )
 })
 

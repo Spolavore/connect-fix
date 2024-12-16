@@ -1,7 +1,7 @@
 <template>
-  <div class="overflow-hidden index">
+  <div class="fixed top-5 right-0 z-[9999] overflow-hidden">
     <div
-      class="w-96 h-20 bg-white absolute right-0 top-5 flex border border-neutral-200 rounded-s-lg drop-shadow-md animacaoToast "
+      class="w-96 h-20 bg-white flex border border-neutral-200 rounded-s-lg drop-shadow-md animacaoToast"
     >
       <div
         class="relative left-0 h-full w-5 rounded-s-lg"

@@ -6,6 +6,7 @@
       :texto="toastTexto" 
       :status="toastStatus" 
       @fecharToast="fecharToast"
+      class="z-50"
     />
 
     <h2 class="text-xl font-medium text-gray-800 mb-2">{{ serviceTitle }}</h2>

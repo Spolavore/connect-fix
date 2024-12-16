@@ -5,6 +5,7 @@
       :texto="toastTexto" 
       :status="toastStatus" 
       @fecharToast="fecharToast"
+      class="z-50"
     />
     
     <div class="flex items-center mb-4">
