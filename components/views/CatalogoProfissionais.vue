@@ -3,9 +3,16 @@
     <CatalogProfessionalSwitch 
       @toggle-services="toggleServiceCards" 
       @search="handleSearch"
+      @refresh-dados="atualizar"
       :is-primary-state="isPrimaryServiceState" 
     />
-    <div class="flex w-full">
+    <div 
+      class="flex flex-col items-center justify-center gap-3 border border-neutral-200 rounded-md p-6"
+      v-if="carregando"
+    >
+      <img src="/icons/loading_circle.svg" class="animate-spin" >
+    </div>
+    <div v-else class="flex w-full">
       <div class="w-full grid grid-cols-3 gap-4">
         <ServiceCard 
           v-if="isPrimaryServiceState"
@@ -51,30 +58,41 @@ const props = defineProps({
 
 // Estado dos serviços
 const isPrimaryServiceState = ref(true)
+const carregando = ref(true);
+const buscar = async () => {
+  let { data: services } = await useFetch('http://localhost:6969/servico', {
+    method: 'GET',
+    transform: (data) => data.map(service => ({
+      id: service.id_servico,
+      titulo: service.titulo,
+      nome: service.nome,
+      descricao: service.descricao,
+      idPrestador: service.id_prestador
+    }))
+  })
 
+  // dados prestadores
+  let { data: professionals } = await useFetch('http://localhost:6969/prestador', {
+    method: 'GET',
+    transform: (data) => data.map(professional => ({
+      id: professional.id,
+      nome: professional.nome,
+      profissao: professional.profissao,
+      descricao: professional.email,
+      nota: professional.avaliacao
+    }))
+  })
+  return {services, professionals}
+}
+const atualizar = async () => {
+  carregando.value = true;
+  let { services, professionals } = await buscar();
+  carregando.value = false;
+  return {services, professionals}
+}
 // Buscar os dados dos serviços da API
-const { data: services } = await useFetch('http://localhost:6969/servico', {
-  method: 'GET',
-  transform: (data) => data.map(service => ({
-    id: service.id_servico,
-    titulo: service.titulo,
-    nome: service.nome,         // trocar para nome quando tiver a coluna na tabela
-    descricao: service.descricao,
-    idPrestador: service.id_prestador
-  }))
-})
-
-// dados prestadores
-const { data: professionals } = await useFetch('http://localhost:6969/prestador', {
-  method: 'GET',
-  transform: (data) => data.map(professional => ({
-    id: professional.id,
-    nome: professional.nome,
-    profissao: professional.profissao,
-    descricao: professional.email,
-    nota: professional.avaliacao
-  }))
-})
+let { services, professionals } = await buscar();
+carregando.value = false;
 console.log(professionals);
 
 // estado de pesquisa
