@@ -58,7 +58,7 @@ const { data: services } = await useFetch('http://localhost:6969/servico', {
   transform: (data) => data.map(service => ({
     id: service.id_servico,
     titulo: service.titulo,
-    nome: service.nome,         // trocar para nome quando tiver a coluna na tabela
+    nome: service.nome,     
     descricao: service.descricao,
     idPrestador: service.id_prestador
   }))
@@ -75,7 +75,6 @@ const { data: professionals } = await useFetch('http://localhost:6969/prestador'
     nota: professional.avaliacao
   }))
 })
-console.log(professionals);
 
 // estado de pesquisa
 const searchQuery = ref('')
