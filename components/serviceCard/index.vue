@@ -6,7 +6,6 @@
       :texto="toastTexto" 
       :status="toastStatus" 
       @fecharToast="fecharToast"
-      class="z-50"
     />
 
     <h2 class="text-xl font-medium text-gray-800 mb-2">{{ serviceTitle }}</h2>
@@ -44,6 +43,7 @@
             <input 
               type="date" 
               v-model="selectedDate" 
+              :min="getCurrentDate()"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
@@ -54,6 +54,8 @@
             <input 
               type="time" 
               v-model="selectedTime" 
+              min="06:00"
+              max="23:00"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
@@ -76,6 +78,15 @@ import { ref, computed } from 'vue'
 import requestService from '~/services/requestService';
 import userService from '~/services/userService';
 import api_urls from '~/utils/Constants';
+
+// função para obter a data atual no formato YYYY-MM-DD
+const getCurrentDate = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
 
 // props do componente
 const props = defineProps({
@@ -107,7 +118,6 @@ const props = defineProps({
     required: false,
     default: -1
   },
-
 })
 
 // limita o número de caracteres da descrição
@@ -116,6 +126,32 @@ const limiteCaracteres = computed(() => {
     ? props.serviceDescription.slice(0, 120) + '...' 
     : props.serviceDescription
 })
+
+// Validação de data e horário
+const validateDateTime = () => {
+  const today = new Date();
+  const selectedDateTime = new Date(`${selectedDate.value}T${selectedTime.value}`);
+  
+  // Se a data selecionada é hoje, verifique o horário
+  if (selectedDate.value === getCurrentDate()) {
+    const currentTime = new Date();
+    const [hours, minutes] = selectedTime.value.split(':').map(Number);
+    
+    // Verifica se o horário está entre 6h e 23h
+    if (hours < 6 || hours > 23) {
+      alert('Por favor, selecione um horário entre 6h e 23h');
+      return false;
+    }
+    
+    // Verifica se o horário selecionado não é anterior ao horário atual
+    if (selectedDateTime < currentTime) {
+      alert('Não é possível selecionar um horário passado');
+      return false;
+    }
+  }
+  
+  return true;
+}
 
 // Estado do modal
 const isModalOpen = ref(false)
@@ -143,6 +179,11 @@ const closeModal = () => {
 
 // Confirma o agendamento
 const confirmSchedule = async() => {
+  // Valida data e hora antes de submeter
+  if (!validateDateTime()) {
+    return;
+  }
+
   const userInfo = userService.getUserInfo();
   const options = {
     url: api_urls().agendar_servico,
@@ -159,7 +200,6 @@ const confirmSchedule = async() => {
       toastTexto.value = 'Agendamento confirmado com sucesso!'
       toastStatus.value = 'sucesso'
       closeModal();
-
     },
     errorCallback: () => {
       showToast.value = true
