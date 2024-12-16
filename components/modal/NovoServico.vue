@@ -1,5 +1,5 @@
 <template>
-    <div class="h-screen w-screen bg-[#9CA3AFA6] absolute left-0 top-0  flex items-center justify-center">
+    <div class="h-screen w-full bg-[#9CA3AFA6] absolute left-0 top-0  flex items-center justify-center">
         <div class="bg-white w-[444px] h-fit pt-5 rounded-md">
             <div class="border-b w-full px-3 pb-5 flex justify-between items-center">
                 <span class="text-neutral-700 font-semibold"> Criar novo serviço </span>

@@ -25,7 +25,7 @@
                     :key="index"
                     class="flex text-sm justify-between items-center border p-2 rounded-lg border-neutral-300 bg-white "
                 >
-                  <div class="flex flex-col">
+                  <div class="flex flex-col w-52">
                       <span><b class="text-blue-900">Título:</b> {{ agendamento.titulo }}</span>
                       <span><b class="text-blue-900">Descrição:</b> {{ agendamento.descricao }}</span>
                       <span ><b class="text-blue-900">Dia:</b> {{ Utils.formataData(agendamento.dt_dia)}} </span>
