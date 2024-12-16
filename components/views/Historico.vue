@@ -270,14 +270,12 @@ const enviarAvaliacao = async (dadosAvaliacao) => {
     const emailAvaliado = tipoUsuario == 'prestador' 
       ? servicoSelecionado.value.email_solicitador 
       : servicoSelecionado.value.email_prestador;
-   
-      if (tipoUsuario == 'prestador') { 
-      var urlAvalicao = api_urls().enviarAvaliacaoSolicitador + `/${emailAvaliado}` + `/${dadosAvaliacao.nota}` 
-
+      let urlAvalicao = 0;
+    if (tipoUsuario == 'prestador') { 
+      urlAvalicao = api_urls().enviarAvaliacaoPrestador + `/${emailAvaliado}` + `/${dadosAvaliacao.nota}` 
     }
     else {
-      var urlAvalicao = api_urls().enviarAvaliacaoPrestador + `/${emailAvaliado}` + `/${dadosAvaliacao.nota}` 
-
+      urlAvalicao = api_urls().enviarAvaliacaoSolicitador + `/${emailAvaliado}` + `/${dadosAvaliacao.nota}` 
     }
 
     const options = {
@@ -289,6 +287,7 @@ const enviarAvaliacao = async (dadosAvaliacao) => {
       },
       callback: () => {
         abrirModalAvaliacao.value = false;
+        abrirModalConfirmacao.value = false;
       },
       errorCallback: (error) => {
         console.error('Erro ao enviar avaliação', error);
