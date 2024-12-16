@@ -13,7 +13,8 @@ const api_urls = () => {
       criar_servico: apiUrl + '/servico',
       agendar_servico: apiUrl + '/realizarAgendamento',
       requerir_agendamento: apiUrl + '/requerirAgendamento',
-      enviarAvaliacao: apiUrl + '/avaliarUsuario',
+      enviarAvaliacaoSolicitador: apiUrl + '/solicitador/avaliar',
+      enviarAvaliacaoPrestador: apiUrl + '/prestador/avaliar',
 
     };
   };
