@@ -22,12 +22,10 @@
           :placeholder="usuarioPrestador ? 'Pesquise por solicitador...': 'Pesquise por prestador...'"
           @filtra-pesquisa="filtrarItemNome"
         />
-        <InputPesquisa 
+        <DropdownStatus 
           placeholder="Pesquisa por status..."
           @filtra-pesquisa="filtrarItemsStatus"
-
         />
-
       </div>
     </div>
     <div 
@@ -300,16 +298,16 @@ const enviarAvaliacao = async (dadosAvaliacao) => {
 
 
 const filtrarItemsStatus = (textoPesquisado) => {
-
-  const texto = textoPesquisado.value
-  if(texto.length == 0){
+  if (!textoPesquisado) {
     itemsTabela.value = itemsTabelaBackup.value;
-    return
+    return;
   } 
-  itemsTabela.value = itemsTabelaBackup.value.filter( item => {
-      return item.status.toUpperCase().includes(texto.toUpperCase())
-  })
-}
+  
+  itemsTabela.value = itemsTabelaBackup.value.filter(item => {
+    return item.status.toUpperCase().includes(textoPesquisado.toUpperCase());
+  });
+};
+
 
 const formataData = (data) =>{
   if(!data) return
