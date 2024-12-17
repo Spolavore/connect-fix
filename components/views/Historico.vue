@@ -336,7 +336,7 @@ const baixarCertificado = async (item) => {
           tipoUsuario: tipoUsuario,
           nomePrestador: item.nome_prestador,
           nomeSolicitador: item.nome_solicitador,
-          data: item.dt_dia,
+          data: item.dt_dia.split('T')[0],
           servico: item.titulo,
         }
         const response = await axios.post(api_urls().baixarCertificado, { userInfo }, {
